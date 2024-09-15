@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4dd24292cdcdee498e90c0545c04216, type: 3}
+  m_Name: BuildingData(BuildingTest)
+  m_EditorClassIdentifier: 
+  objectSprite: {fileID: 21300000, guid: 821f02167000de84090589eb67a10505, type: 3}
+  objectName: "\uAC74\uC124\uBB3C"
+  objectShortDescription: "\uAC74\uBB3C\uC785\uB2C8\uB2E4."
+  objectDescription: "\uD14C\uC2A4\uD2B8\uC6A9 \uAC74\uBB3C\uC785\uB2C8\uB2E4."
+  buildingType: 4
+  bluePrintBuildingImage: {fileID: 0}
+  buildingObject: {fileID: 0}
+  skeletonStructure: {fileID: -8680236410497444147, guid: d1c1bb2753263974e9e7715304ff6dd6, type: 3}
+  buildingTile: {fileID: 0}
+  skeletonTile: {fileID: 0}
+  resourceDatas:
+  - {fileID: 11400000, guid: bc04e97e72118574f88d065a637e5ce5, type: 2}
+  - {fileID: 11400000, guid: b425a995dac1a5a4ab7c926a314e38ba, type: 2}
+  resourceNeedAmounts: 
+  buildingWorkNeedValue: 2
+  skeletonStructureType: 0
+  fixResourceDatas: []
+  fixResourceNeedAmounts: 
+  checkBuildings: []
+  checkComparisonOperatorTypes: 
+  checkBuildAmounts: 

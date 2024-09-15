@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4dd24292cdcdee498e90c0545c04216, type: 3}
+  m_Name: TestBuildingData
+  m_EditorClassIdentifier: 
+  objectSprite: {fileID: 21300000, guid: f1a04f54b58ea284d957f9f030408d17, type: 3}
+  objectName: Test
+  objectShortDescription: "\uAC74\uBB3C\uC744 \uD574\uCCB4\uD569\uB2C8\uB2E4.\n"
+  objectDescription: 
+  buildingType: 1
+  bluePrintBuildingImage: {fileID: 6080612640920634678, guid: 0cd7a0f2fc236f647ae80a68741b8f66, type: 3}
+  buildingObject: {fileID: 0}
+  skeletonStructure: {fileID: 0}
+  buildingTile: {fileID: 0}
+  skeletonTile: {fileID: 0}
+  resourceDatas: []
+  resourceNeedAmounts: 
+  buildingWorkNeedValue: 0
+  skeletonStructureType: 0
+  fixResourceDatas: []
+  fixResourceNeedAmounts: 
+  checkBuildings: []
+  checkComparisonOperatorTypes: 
+  checkBuildAmounts: 
