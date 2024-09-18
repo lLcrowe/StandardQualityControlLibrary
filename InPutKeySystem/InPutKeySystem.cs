@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using lLCroweTool.Singleton;
-using lLCroweTool.TimerSystem;
-using lLCroweTool.Dictionary;
 
 namespace lLCroweTool
 {
@@ -283,6 +281,12 @@ namespace lLCroweTool
         public Vector3 mouseScreenPosition;
         public Ray mouseRay;
 
+        public static Vector3 MouseWorldPosition;
+        public static Vector2 MouseWorld2DPosition;
+        public static float MouseScreenDistance;
+        public static Vector3 MouseScreenPosition;
+        public static Ray MouseRay;
+
 #pragma warning disable CS0108 // 멤버가 상속된 멤버를 숨깁니다. new 키워드가 없습니다.
         private Camera camera;
 #pragma warning restore CS0108
@@ -292,6 +296,9 @@ namespace lLCroweTool
         //쓰기편하게+관리편하게+이식하면 금방쓰게
         [SerializeField] private List<KeyData> normalKeyDataList = new List<KeyData>(10);
         [SerializeField] private List<KeyData> secondaryKeyDataList = new List<KeyData>(10);
+
+        public delegate void UpdateAction(float deltaTime);
+        public UpdateAction updateAction;
 
         internal List<KeyData> NormalKeyDataList {get => normalKeyDataList; }
         internal List<KeyData> SecondaryKeyDataList { get => secondaryKeyDataList; }
@@ -326,7 +333,15 @@ namespace lLCroweTool
             mouseWorldPosition = camera.ScreenToWorldPoint(mouseScreenPosition);
             mouseWorld2DPosition = mouseWorldPosition;
 
-            //키처리
+            //Static에 이식
+            MouseWorldPosition = mouseWorldPosition;
+            MouseWorld2DPosition = mouseWorld2DPosition;
+            MouseScreenDistance = mouseScreenDistance;
+            MouseScreenPosition = mouseScreenPosition;
+            MouseRay = mouseRay;
+
+
+            //키처리구간
 
             //노말키
             for (int i = 0; i < normalKeyDataList.Count; i++)
@@ -341,6 +356,11 @@ namespace lLCroweTool
                 var key = secondaryKeyDataList[i];
                 key.UpdateKey();
             }
+
+            //인풋용 업데이트//플레이어용 
+            var deltaTime = Time.deltaTime;
+            updateAction?.Invoke(deltaTime);
+
 #if CommandKey
             commandSystem.Update();
 #endif

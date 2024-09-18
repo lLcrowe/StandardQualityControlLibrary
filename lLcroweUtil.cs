@@ -1323,7 +1323,7 @@ namespace lLCroweTool
         /// </summary>
         /// <param name="targetAPos">A 위치</param>
         /// <param name="targetBPos">B 위치</param>
-        /// <returns></returns>
+        /// <returns>단위벡터</returns>
         public static Vector2 CalDirection2D(Vector2 targetAPos, Vector2 targetBPos)
         {
             Vector3 direction = targetAPos - targetBPos;
@@ -1339,7 +1339,7 @@ namespace lLCroweTool
 
             //수평속도 = 투사속도 * cos(각도)
             //수직속도 = 투사속도 * sin(각도)
-            Vector2 unitDir = new Vector2(Mathf.Cos(radian), Mathf.Sin(radian));
+            direction = new Vector2(Mathf.Cos(radian), Mathf.Sin(radian));
             //Vector2 unitDir;
             //unitDir.x = Mathf.Cos(radian);
             //unitDir.y = Mathf.Sin(radian);
@@ -1347,7 +1347,7 @@ namespace lLCroweTool
             //수평일시 속도:(-1.0, 0.0)각도:180라디안:3.141593
             //각을 주었을시 속도:(-0.9, -0.4)각도:-153.4669라디안:-2.678504
             //Debug.Log("속도:" + unitDir + "각도:" + newAngle + "라디안:" + radian);
-            return unitDir;
+            return direction;
         }
 
         /// <summary>
