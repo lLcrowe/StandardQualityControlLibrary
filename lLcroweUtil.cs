@@ -908,11 +908,9 @@ namespace lLCroweTool
         {
             Vector2 targetDir = lookTarget - (Vector2)rotateTarget.position;
             float newangle = Mathf.Atan2(targetDir.y, targetDir.x) * Mathf.Rad2Deg - offSetAngle;
-
-
-
-            float zAngle = MoveTowardsAngle(rotateTarget.eulerAngles.z, newangle, rotateSpeed);//일정하게 움직임
-            rotateTarget.rotation = Quaternion.Euler(0, 0, zAngle);
+            var angleZ = rotateTarget.eulerAngles.z;
+            newangle = MoveTowardsAngle(angleZ, newangle, rotateSpeed);//일정하게 움직임
+            rotateTarget.rotation = Quaternion.Euler(0, 0, newangle);
         }
 
         /// <summary>
