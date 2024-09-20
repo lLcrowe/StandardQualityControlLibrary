@@ -2457,7 +2457,7 @@ namespace lLCroweTool
         /// <param name="min">최소값</param>
         /// <param name="max">최대값</param>
         /// <returns>변환값</returns>
-        public static int GetLimitAmount(this int cur, int min, int max)
+        public static int GetLimitAmount(this int cur,in int min, in int max)
         {
             cur = System.Math.Clamp(cur, min, max);
             return cur;
@@ -2521,6 +2521,27 @@ namespace lLCroweTool
         {
             index = index.GetLimitMin(0);
             return index < collection.Count;
+        }
+
+        /// <summary>
+        /// 트리거함수(딸칵)
+        /// </summary>
+        /// <param name="checkAction"></param>
+        /// <param name="startTriggerAction"></param>
+        /// <param name="endTriggerAction"></param>
+        /// <param name="updateTriggerAction"></param>
+        /// <param name="state"></param>
+        /// <param name="prevState"></param>
+        public static void Trigger(ref bool curState, in bool newState, in System.Action<bool> stateAction)
+        {
+            if (curState == newState)
+            {
+                return;
+            }
+
+            curState = newState;
+            stateAction?.Invoke(curState);
+            Debug.Log("state");
         }
 
         /// <summary>
