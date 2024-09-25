@@ -1,8 +1,11 @@
-﻿using UnityEngine;
-using UnityEngine.Events;
+﻿#if MEC
 using MEC;
+#endif
+
+using UnityEngine;
 using System.Collections.Generic;
 using lLCroweTool.TimerSystem;
+using lLCroweTool.ObjectPool;
 
 namespace lLCroweTool.RespawnSystem
 {
@@ -22,57 +25,73 @@ namespace lLCroweTool.RespawnSystem
         //몬스터리젠 주기
         //전체몬스터 최대수
 
-        public enum SpawnType
-        {
-            Single,//단일 자리에서나옴
-            Multiple,//여러 자리에서 나옴
-        }
 
-        [Header("위치")]
-        public SpawnType spawnType;//여러방향에서 어덯게 스폰될지에 대한 타입
+        //20240925
+        //구조변경//기능정리
+        //스폰
+
+
+     
+
+
+
+
+
+        [Header("위치")]        
         public Transform[] targetRespawnPositionArray = new Transform[0];//위치들//업방향 쪽으로 리스폰
-        public float spawnIntervalTime;//스폰마다의 간격
+        public TimerModule_Element timer;
+        public bool isRot;
+
         public int spawnAmount = 1;//스폰수량
-
-        public bool isUseRandomCircleSizePosition = false;
-        [Min(0)] public float randomSize = 1f;//양수여야함
+        System.Func<Vector3> randomPosAction;
         
-        [Header("확률적 소환")]
+        [Header("스폰관련")]
         public bool isUsePercentSpawn = false;//확률 사용여부
-        public int percentValue = 0;//확률
+        public int percentValue = 50;//확률
 
-        [Header("스폰시킬 오브젝트")]
         public RespawnTarget respawnTargetPrefab;
-
-        [Header("스폰 제한설정")]
         public bool isRespawnLimit = false;//소환시키는 몹의 숫자에 대한 제한을 하는가//이미나온거는 상관안함
         public int respawnLimitCount = 20;
-        public List<RespawnTarget> respawnTargetList = new(20);
+        public List<RespawnTarget> respawnTargetList = new();
 
-        [Header("거리 제한설정")]
-        public bool isInner;
-        public float distance;
+        //리스폰배치처리
+        [System.Serializable]
+        public class CustomRespawnBatchData
+        {
+            public int index;
+            public TimerModule_Element timer;
+            public bool isRot;
+        }
+        [Header("커스텀")]
+        public CustomRespawnBatchData[] customRespawnBatchDataArray = new CustomRespawnBatchData[0];
 
-        public UnityEvent startRespawnEvent;//작동했을시 이벤트
-
+#if MEC
         //캐싱용
         private CoroutineHandle coroutineHandle;//코루틴캐싱
-        private CoolTimerModule respawnCoolTimer;//리스폰 세팅용
 
         private void Awake()
         {
-            respawnCoolTimer = lLcroweUtil.GetAddComponent<CoolTimerModule>(gameObject);
-            respawnCoolTimer.coolTimerModule.SetActionEvent(() => { StartRespawn(this); });
-
-            //스폰수
-            //for (int j = 0; j < respanwNum * targetRespawnPositions.Length; j++) 
-            //{   
-            //    RespawnTarget respawnTarget = CreateRespawnTarget();
-            //    respawnTarget.transform.position = transform.position;
-            //    respawnTarget.transform.rotation = transform.rotation;
-            //    respawnTarget.gameObject.SetActive(false);
-            //}    
+            
+            
         }
+#else
+
+        private void Update()
+        {
+            UpdateRespawnModule();
+        }
+#endif
+
+
+        private void UpdateRespawnModule()
+        {
+            if (!timer.CheckTimer())
+            {
+                return;
+            }
+            StartRespawn(this);
+        }
+
 
         /// <summary>
         /// 리스폰시작함수
@@ -82,7 +101,7 @@ namespace lLCroweTool.RespawnSystem
         {
             //쿨타이머모듈에서 사용하는게 좋아보인다
             //오직한번만 소환 다른곳에서 계속소환할수있게 도와줘야함
-            respawnModule.startRespawnEvent?.Invoke();
+
             //제한스폰인가?
             if (respawnModule.isRespawnLimit)
             {
@@ -96,21 +115,9 @@ namespace lLCroweTool.RespawnSystem
             //수량체크
             if (respawnModule.spawnAmount <= 0)
             {
-                Timing.KillCoroutines(respawnModule.coroutineHandle);
                 return;
             }
 
-            respawnModule.coroutineHandle = Timing.RunCoroutine(Respawn(respawnModule));
-        }
-
-
-        /// <summary>
-        /// 리스폰
-        /// </summary>
-        /// <param name="respawnModule"></param>
-        /// <returns></returns>
-        private static IEnumerator<float> Respawn(RespawnModule respawnModule)
-        {
             //스폰방식
             switch (respawnModule.spawnType)
             {
