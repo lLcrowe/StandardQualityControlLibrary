@@ -294,14 +294,18 @@ namespace lLCroweTool.PathFinder
             if (astarAI is AIBase aiBase)
             { aiBase.updateRotation = isUseRotate; return; }
             else if (astarAI is AILerp aiLerp) { aiLerp.updateRotation = isUseRotate; return; }
-            else if (astarAI is FollowerEntity follower){follower.updateRotation = isUseRotate; return;}
+
+            //5.1
+            //else if (astarAI is FollowerEntity follower){follower.updateRotation = isUseRotate; return;}
         }
 
         public static void EnableAIComponent(this IAstarAI aI, bool value)
         {
             if (aI is AIBase aiBase) aiBase.enabled = value;
             else if (aI is AILerp aiLerp) aiLerp.enabled = value;
-            else if (aI is FollowerEntity follower)follower.enabled = value;
+
+            //5.1
+            //else if (aI is FollowerEntity follower)follower.enabled = value;
         }
 
         /// <summary>

@@ -6,6 +6,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using lLCroweTool.TimerSystem;
 using lLCroweTool.ObjectPool;
+using System;
 
 namespace lLCroweTool.RespawnSystem
 {
@@ -39,13 +40,12 @@ namespace lLCroweTool.RespawnSystem
 
         [Header("위치")]        
         public Transform[] targetRespawnPositionArray = new Transform[0];//위치들//업방향 쪽으로 리스폰
-        public TimerModule_Element timer;
-        public bool isRot;
-
-        public int spawnAmount = 1;//스폰수량
-        System.Func<Vector3> randomPosAction;
-        
+        public int curIndex = 0;
         [Header("스폰관련")]
+        public TimerModule_Element timer;
+        public int spawnAmount = 1;//스폰수량
+        public bool isRot;
+        System.Func<Vector3> randomPosAction;
         public bool isUsePercentSpawn = false;//확률 사용여부
         public int percentValue = 50;//확률
 
@@ -60,7 +60,10 @@ namespace lLCroweTool.RespawnSystem
         {
             public int index;
             public TimerModule_Element timer;
-            public bool isRot;
+            public int spawnAmount = 1;//스폰수량
+            public bool isRot;            
+            public bool isUsePercentSpawn = false;//확률 사용여부
+            public int percentValue = 50;//확률
         }
         [Header("커스텀")]
         public CustomRespawnBatchData[] customRespawnBatchDataArray = new CustomRespawnBatchData[0];
@@ -85,11 +88,7 @@ namespace lLCroweTool.RespawnSystem
 
         private void UpdateRespawnModule()
         {
-            if (!timer.CheckTimer())
-            {
-                return;
-            }
-            StartRespawn(this);
+            StartRespawn();
         }
 
 
@@ -97,93 +96,92 @@ namespace lLCroweTool.RespawnSystem
         /// 리스폰시작함수
         /// </summary>
         /// <param name="respawnModule">리스폰모듈</param>
-        private static void StartRespawn(RespawnModule respawnModule)
+        private void StartRespawn()
         {
             //쿨타이머모듈에서 사용하는게 좋아보인다
             //오직한번만 소환 다른곳에서 계속소환할수있게 도와줘야함
 
+            //수량체크
+            if (spawnAmount <= 0)
+            {
+                return;
+            }
+
             //제한스폰인가?
-            if (respawnModule.isRespawnLimit)
+            if (isRespawnLimit)
             {
                 //제한량 확인
-                if (respawnModule.respawnLimitCount < respawnModule.respawnTargetList.Count)
+                if (respawnLimitCount < respawnTargetList.Count)
+                {
+                    return;
+                }
+            }
+          
+            //랜덤체크
+            if (isUsePercentSpawn)
+            {
+                if (!lLcroweUtil.ProbabilityCal(percentValue))
                 {
                     return;
                 }
             }
 
-            //수량체크
-            if (respawnModule.spawnAmount <= 0)
+           
+
+
+          
+        }
+
+        private void Spawn()
+        {
+            if (!timer.CheckTimer())
             {
                 return;
             }
 
             //스폰방식
-            switch (respawnModule.spawnType)
+            for (int i = 0; i < targetRespawnPositionArray.Length; i++)
             {
-                case SpawnType.Single:
-                    //싱글//단일위치에서만 나옴
-                    Transform single = GetRandomRespawnPos(respawnModule);
-                    for (int i = 0; i < respawnModule.spawnAmount; i++)
-                    {
-                        SpawnObject(respawnModule, single);
-                        yield return Timing.WaitForSeconds(respawnModule.spawnIntervalTime);
-                    }
-                    break;
-                case SpawnType.Multiple:
-                    //멀티//여러위치에서 나옴
-                    for (int i = 0; i < respawnModule.spawnAmount; i++)
-                    {
-                        Transform multiple = GetRandomRespawnPos(respawnModule);
-                        SpawnObject(respawnModule, multiple);
-                        yield return Timing.WaitForSeconds(respawnModule.spawnIntervalTime);
-                    }
-                    break;
+                if (CheckCustomBatch(i))
+                {
+                    continue;
+                }
+                var spawnPos = targetRespawnPositionArray[i];
+                var targetRespawn = ObjectPoolManager.Instance.RequestDynamicComponentObject(respawnTargetPrefab);
+                var tr = targetRespawn.transform;
+                var pos = tr.position;
+
+                //랜덤포스
+                if (randomPosAction != null)
+                {
+                    var randomPos = randomPosAction.Invoke();
+                    pos += randomPos;
+                }
+
+                var rot = isRot ? spawnPos.rotation : Quaternion.identity;
+                tr.SetPositionAndRotation(pos, rot);
+                tr.SetParent(transform.parent);
+                targetRespawn.gameObject.SetActive(true);
+
             }
         }
 
-        /// <summary>
-        /// 리스폰모듈의 스폰확률 확인하는 함수
-        /// </summary>
-        /// <param name="respawnModule">리스폰모듈</param>
-        /// <returns>스폰할것인가?</returns>
-        private static bool CheckSpawnPercent(RespawnModule respawnModule)
+        private bool CheckCustomBatch(int index)
         {
-            bool isDone = true;
-            //스폰확률을 활용하는가
-            if (respawnModule.isUsePercentSpawn)
+            var value = false;
+            for (int i = 0; i < customRespawnBatchDataArray.Length; i++)
             {
-                if (!lLcroweUtil.ProbabilityCal(respawnModule.percentValue))
+                var target = customRespawnBatchDataArray[i];
+                if (target.index == index)
                 {
-                    isDone = false;
+                    value = true;
+                    break;
                 }
             }
-            return isDone;
+            return value;
         }
 
-        /// <summary>
-        /// 오브젝트 스폰함수
-        /// </summary>
-        /// <param name="respawnModule">리스폰모듈</param>
-        /// <param name="targetRespawnPos">타겟위치</param>
-        private static void SpawnObject(RespawnModule respawnModule, Transform targetRespawnPos)
-        {
-            //소환확률 체크
-            if (CheckSpawnPercent(respawnModule))
-            {
-                RespawnTarget targetRespawn = ObjectPoolManager.Instance.RequestDynamicComponentObject(respawnModule.respawnTargetPrefab);
-                targetRespawn.transform.SetPositionAndRotation(lLcroweUtil.GetRandomCirclePosition(targetRespawnPos, respawnModule.randomSize, respawnModule.isUseRandomCircleSizePosition), targetRespawnPos.rotation);
-                targetRespawn.transform.parent = respawnModule.transform.parent;
-                targetRespawn.gameObject.SetActive(true);
-            }
-        }
-   
-        //랜덤 트랜스폼을 반환하는 함수
-        private static Transform GetRandomRespawnPos(RespawnModule respawnModule)
-        {
-            int index = Random.Range(0, respawnModule.targetRespawnPositionArray.Length);
-            return respawnModule.targetRespawnPositionArray[index];
-        }
+        
     }
 }
 
