@@ -10,12 +10,16 @@ using UnityEngine;
 //20240607//기존 lLcroweToolBox 통합
 //20240609//심볼제작기 제작끝
 
-namespace lLCroweTool.QC.EditorOnly
+namespace SymbolDefine
 {
+
+
+
     /// <summary>
     /// 지정된 정의 기호를 플레이어 설정 정의 기호에 추가기능
     /// 아래의 Symbol 속성에 자신의 정의 기호를 추가하기만 하면 됩니다
     /// </summary>
+    [DefaultExecutionOrder(-5000)]
     [InitializeOnLoad]
     public class SymbolDefineEditor : EditorWindow
     {
@@ -33,7 +37,7 @@ namespace lLCroweTool.QC.EditorOnly
 
 
 
-            "TimerModule",
+            //"TimerModule",//따로 리폴로지가 생성됨
             //유틸안에서 세팅해놓게 처리//둘중하나를 쓰도록 권장
             //"Util2D",//2D게임용 유틸
             //"Util3D",//3D게임용 유틸
@@ -50,10 +54,7 @@ namespace lLCroweTool.QC.EditorOnly
             //"Animancer",ResearchTreeStore
             "Achevement",//"업적",
             "Localize",//MEC&Localize//현지화
-
-
-            
-           
+            "lLcroweDOTS",//DOTS용
         };
 
         //에셋 익스텐드구역
@@ -72,7 +73,8 @@ namespace lLCroweTool.QC.EditorOnly
         protected static Vector2 windowMinSize = new Vector2(300, 200);
         protected static Vector2 windowMaxSize = new Vector2(300, 515);
         //각각 윈도우에디터에 써줘야 나오는것
-        [MenuItem("lLcroweTool/DefineSymbols")]
+        //[InitializeOnLoadMethod]
+        [MenuItem("DefineSymbols")]
         public static void ShowWindow()
         {
             EditorWindow editorWindow = GetWindow(typeof(SymbolDefineEditor));
@@ -97,14 +99,14 @@ namespace lLCroweTool.QC.EditorOnly
 
         private void OnGUI()
         {
-            ShowSymbolList(ref symbolScrollPos, symbolArray,"개인라이브러리");            
-            ShowSymbolList(ref symbolExtentscroll, extendSymbolArray,"에셋");
+            ShowSymbolList(ref symbolScrollPos, symbolArray, "개인라이브러리");
+            ShowSymbolList(ref symbolExtentscroll, extendSymbolArray, "에셋");
         }
 
         private void ShowSymbolList(ref Vector2 scroll, string[] symbolArray, string content)
         {
             EditorGUILayout.LabelField(content);
-            lLcroweUtilEditor.EditorLineLayout();
+            EditorLineLayout();
             scroll = EditorGUILayout.BeginScrollView(scroll);
             for (int i = 0; i < symbolArray.Length; i++)
             {
@@ -115,12 +117,12 @@ namespace lLCroweTool.QC.EditorOnly
                 if (CheckSymbol(targetString))
                 {
                     GUI.color = Color.red;
-                    lLcroweUtilEditor.Button("삭제", () => RemoveSymbol(targetString));
+                    Button("삭제", () => RemoveSymbol(targetString));
                 }
                 else
                 {
                     GUI.color = Color.green;
-                    lLcroweUtilEditor.Button("추가", () => AddSymbol(targetString));
+                    Button("추가", () => AddSymbol(targetString));
                 }
                 GUI.color = Color.white;
                 EditorGUILayout.EndHorizontal();
@@ -159,6 +161,50 @@ namespace lLCroweTool.QC.EditorOnly
             defines = defines.Replace(symbol + ";", "").Replace(";" + symbol, "").Replace(symbol, "");
             PlayerSettings.SetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup, defines);
         }
+
+        public static void EditorLineLayout(Color color = default, float thickness = 0.5f, int padding = 10, int margin = 0)
+        {
+            //EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
+
+            color = color != default ? color : Color.grey;
+            Rect r = EditorGUILayout.GetControlRect(false, GUILayout.Height(padding + thickness));
+            r.height = thickness;
+            r.y += padding * 0.5f;
+
+            switch (margin)
+            {
+                // expand to maximum width
+                case < 0:
+                    r.x = 0;
+                    r.width = EditorGUIUtility.currentViewWidth;
+
+                    break;
+                case > 0:
+                    // shrink line width
+                    r.x += margin;
+                    r.width -= margin * 2;
+
+                    break;
+            }
+
+            EditorGUI.DrawRect(r, color);
+        }
+
+
+        /// <summary>
+        /// 에디터버튼(래핑함)
+        /// </summary>
+        /// <param name="content">버튼컨텐츠</param>
+        /// <param name="action">액션</param>
+        public static void Button(string content, System.Action action)
+        {
+            if (GUILayout.Button(content))
+            {
+                action?.Invoke();
+                SceneView.RepaintAll();
+            }
+        }
+
     }
 }
 #endif

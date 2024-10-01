@@ -1,5 +1,4 @@
-﻿using lLCroweTool.QC.EditorOnly;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 

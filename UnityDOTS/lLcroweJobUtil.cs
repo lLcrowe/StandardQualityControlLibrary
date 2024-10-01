@@ -66,7 +66,6 @@ namespace lLCroweTool.DOTS
                 job.Init(100);
                 monoBehaviour.StartCoroutine(RunParallelJob(job, this, 100, 50));
             }
-
         }
 
         public static IEnumerator RunJob(Job job)
@@ -142,10 +141,10 @@ namespace lLCroweTool.DOTS
             }
 
             public void Execute()
-            {
+            {   
                 for (int i = 0; i < 10; i++)
                 {
-                    test++;
+                    test++;                    
                 }
                 Debug.Log($"job : {test},  ID: {GetThreadID}");
             }
