@@ -1420,7 +1420,7 @@ namespace lLCroweTool.QC.EditorOnly
         /// <param name="content">버튼컨텐츠</param>
         /// <param name="action">액션</param>
         public static void EditorButton(string content, System.Action action)
-        {
+        {            
             if (GUILayout.Button(content))
             {
                 action?.Invoke();
@@ -1438,14 +1438,15 @@ namespace lLCroweTool.QC.EditorOnly
         /// </summary>
         /// <param name="content">버튼컨텐츠</param>
         /// <param name="action">액션</param>
-        public static void Button(string content, System.Action action)
-        {
-            if (GUILayout.Button(content))
-            {
-                action?.Invoke();
-                SceneView.RepaintAll();                
-            }
-        }
+        //public static void Button(string content, System.Action action)
+        //{
+            //이곳은 위에 버튼과 합치는게 맞아보임
+            //if (GUILayout.Button(content))
+            //{
+             //   action?.Invoke();
+              //  SceneView.RepaintAll();                
+            //}
+        //}
 
         /// <summary>
         /// Enum팝업
