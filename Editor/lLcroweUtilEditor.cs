@@ -1419,7 +1419,7 @@ namespace lLCroweTool.QC.EditorOnly
         /// </summary>
         /// <param name="content">버튼컨텐츠</param>
         /// <param name="action">액션</param>
-        public static void EditorButton(string content, System.Action action)
+        public static void Button(string content, System.Action action)
         {            
             if (GUILayout.Button(content))
             {

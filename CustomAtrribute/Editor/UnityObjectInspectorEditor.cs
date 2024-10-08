@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using System.Linq;
@@ -6,9 +7,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System;
-
-
-#if UNITY_EDITOR
 
 namespace lLCroweTool.QC.EditorOnly
 {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using TMPro;
-using UILibrary;
+using UnityEngine.UI;
 
 
 namespace lLCroweTool
@@ -17,7 +17,7 @@ namespace lLCroweTool
 		//public List<Sprite> bugSpriteList = new List<Sprite>();
 		public TMP_Dropdown targetDropdown;
 		public TMP_InputField targetInputField;
-		public CustomButton targetButton;
+		public Button targetButton;
 		
         private void Awake()
         {
@@ -41,7 +41,7 @@ namespace lLCroweTool
 			//targetDropdown.AddOptions(bugSpriteList);
 			targetDropdown.AddOptions(bugTypeList);
 
-			targetButton.onClickAction = SendReport;
+			targetButton.onClick.AddListener(SendReport);
 		}
 
 		/// <summary>
