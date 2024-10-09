@@ -19,8 +19,8 @@ namespace SymbolDefine
     /// 지정된 정의 기호를 플레이어 설정 정의 기호에 추가기능
     /// 아래의 Symbol 속성에 자신의 정의 기호를 추가하기만 하면 됩니다
     /// </summary>
-    [DefaultExecutionOrder(-5000)]
-    [InitializeOnLoad]
+    //[DefaultExecutionOrder(-5000)]
+    //[InitializeOnLoad]
     public class SymbolDefineEditor : EditorWindow
     {
         //규칙은 심플하게 
@@ -61,6 +61,7 @@ namespace SymbolDefine
         public string[] extendSymbolArray = new string[]
         {
             "MEC",
+            "PathFinder",
             "DoTween",
             "MasterAudio",
             "Sensor",
@@ -72,9 +73,10 @@ namespace SymbolDefine
 
         protected static Vector2 windowMinSize = new Vector2(300, 200);
         protected static Vector2 windowMaxSize = new Vector2(300, 515);
+        //[InitializeOnLoadMethod]//여러번튀어나오는문제가 있음
+
         //각각 윈도우에디터에 써줘야 나오는것
-        //[InitializeOnLoadMethod]
-        [MenuItem("DefineSymbols")]
+        [MenuItem("lLcroweTool/DefineSymbols")]
         public static void ShowWindow()
         {
             EditorWindow editorWindow = GetWindow(typeof(SymbolDefineEditor));

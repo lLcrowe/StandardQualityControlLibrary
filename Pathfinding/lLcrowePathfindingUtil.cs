@@ -1,4 +1,6 @@
-﻿using Pathfinding;
+﻿#if PathFinder
+
+using Pathfinding;
 using Pathfinding.RVO;
 using System.Collections.Generic;
 using UnityEngine;
@@ -625,3 +627,4 @@ namespace lLCroweTool.PathFinder
 
     }
 }
+#endif
