@@ -63,6 +63,7 @@ namespace SymbolDefine
             "MEC",
             "PathFinder",
             "DoTween",
+            "DoTweenASM",
             "MasterAudio",
             "Sensor",
             "DamageText",
