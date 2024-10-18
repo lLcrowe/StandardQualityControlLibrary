@@ -5,8 +5,8 @@ namespace lLCroweTool.QC.EditorOnly
 {
     //[CustomEditor(typeof(T))]//수동으로 표시해주기
     //불가능//CustomEditor 어트리뷰트는 T를 사용못함//수동으로
-    //[CustomEditor(typeof(CustomDataInspecterEditor))]형식으로 상속받을때마다 붙혀주기
-    //[CustomEditor(typeof(CustomDataInspecterEditor), true)] 쓰면 해당 오브젝트에 필요한걸 못 체크하니 필요할때 만들어버리기
+    //[CustomEditor(typeof(T))]형식으로 상속받을때마다 붙혀주기
+    //[CustomEditor(typeof(T), true)] 쓰면 해당 오브젝트에 필요한걸 못 체크하니 필요할때 만들어버리기
     public abstract class CustomDataInspecterEditor<T> : Editor where T : Component
     {
         //인스팩터에디터 제너릭화
