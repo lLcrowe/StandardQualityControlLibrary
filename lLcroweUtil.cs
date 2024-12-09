@@ -1206,22 +1206,26 @@ namespace lLCroweTool
 
       
 
-        public static void RigidBody2DMoveRotate(Rigidbody2D rb2d, Transform rotateTarget, Transform lookTarget)
+        public static void RotateRigidBody2D(Rigidbody2D rb2d, Transform rotateTarget, Transform lookTarget)
         {
             Vector3 direction = lookTarget.position - rotateTarget.position;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             //rb2d.rotation = angle;
             rb2d.SetRotation(angle);
         }
-        public static void RigidBody2DMoveRotate(Rigidbody2D rb2d, float _angle)
+        public static void RotateRigidBody2D(Rigidbody2D rb2d, Vector2 lookTarget, float rotateSpeed, float offSetAngle = 90)
         {
-            rb2d.rotation = _angle;
+            Vector2 targetDir = lookTarget - (Vector2)rb2d.position;
+            float newangle = Mathf.Atan2(targetDir.y, targetDir.x) * Mathf.Rad2Deg - offSetAngle;
+            var angleZ = rb2d.rotation;
+            newangle = MoveTowardsAngle(angleZ, newangle, rotateSpeed);//일정하게 움직임
+            rb2d.rotation = newangle;
         }
 
-        //아직 검증안됨
-        public static void RotationObject(Rigidbody2D rb2d)
+        //아직 검증안됨//속도에 다른 회전처리
+        public static void RotationObject(Rigidbody2D rb2d, float offset = 90f)
         {
-            float angle = Mathf.Atan2(rb2d.velocity.y, rb2d.velocity.x) * Mathf.Rad2Deg + 90;
+            float angle = Mathf.Atan2(rb2d.velocity.y, rb2d.velocity.x) * Mathf.Rad2Deg + offset;
             rb2d.SetRotation(angle);// = Quaternion.AngleAxis(angle, Vector3.forward);
         }
 
