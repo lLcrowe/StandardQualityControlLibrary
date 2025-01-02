@@ -2,7 +2,7 @@
 
 namespace lLCroweTool.Sound
 {
-    public class SoundObjectScript : ScriptableObject
+    public class SoundInfo : ScriptableObject
     {
         public AudioClip audioClip;
 
