@@ -1,23 +1,21 @@
-﻿using System.Collections;
+﻿using lLCroweTool;
+using System.Collections;
 using UnityEngine;
 
-namespace Assets.StandardQualityControlLibary.SoundSystem
+namespace lLCroweTool.Sound
 {
     public class SoundObject : MonoBehaviour
     {
         //오디오 작동시키는 오브젝트
-        //public audioplay
+        public AudioSource audioSource;
 
-        // Use this for initialization
-        void Start()
+
+        public void Action(AudioClip audioClip)
         {
-
+            //사운드작동
+            audioSource.Stop();
+            audioSource.PlayOneShot(audioClip);
         }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+       
     }
 }
