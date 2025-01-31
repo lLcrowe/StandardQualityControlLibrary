@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -123,7 +121,7 @@ namespace lLCroweTool
         //3. 2번과정을 X만큼 반복. Append로 추가된 문자열이 미리 할당한 메모리보다 많아지면 새롭게 여유분의 메모리를 할당
         //4. ToString 메서드를 호출하면 연속적으로 연결된 하나의 문자열을 반환.
 
-        private static StringBuilder builder = new StringBuilder();
+        private static System.Text.StringBuilder builder = new ();
 
         /// <summary>
         /// 여러문자열들 결합해주는 함수
@@ -509,6 +507,18 @@ namespace lLCroweTool
             float xDiff = a.x - b.x;
             float yDiff = a.y - b.y;
             return xDiff * xDiff + yDiff * yDiff;
+        }
+
+        /// <summary>
+        /// 스케일팩터값을 가져오는 함수 
+        /// </summary>
+        /// /// <param name="currentValue">현재 값</param>
+        /// <param name="standardValue">기준이 될 값</param>
+        /// <returns>스케일팩터값</returns>
+        public static float GetScaleFactor(this float currentValue, float standardValue)
+        {
+            float scaleFactor = currentValue / standardValue;
+            return scaleFactor;
         }
 
         /// <summary>
