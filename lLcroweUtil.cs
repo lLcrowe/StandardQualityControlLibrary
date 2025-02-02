@@ -734,7 +734,7 @@ namespace lLCroweTool
         }
 
         /// <summary>
-        /// A->B방향으로 회전값 가져오는 함수
+        /// A->B방향으로 회전값 가져오는 함수//테스트후 수정
         /// </summary>
         /// <param name="rotateTarget">회전하는 오브젝트</param>
         /// <param name="lookTarget">봐야될 위치</param>
@@ -750,7 +750,7 @@ namespace lLCroweTool
         }
 
         /// <summary>
-        /// A->B방향으로 제한된 회전값 가져오는 함수
+        /// A->B방향으로 제한된 회전값 가져오는 함수//테스트후 수정
         /// </summary>
         /// <param name="rotateTarget">회전하는 오브젝트</param>
         /// <param name="lookTarget">봐야될 위치</param>
