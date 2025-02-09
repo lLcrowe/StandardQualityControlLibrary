@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Experimental.AI;
 
 namespace lLCroweTool.Sound
 {
@@ -16,6 +17,14 @@ namespace lLCroweTool.Sound
         {
             audioListener = FindFirstObjectByType<AudioListener>(FindObjectsInactive.Include);
             audioListenerTr = audioListener.transform;
+
+            if (soundObjectPrefab == null)
+            {
+                var go = new GameObject("Sound");
+                soundObjectPrefab = go.AddComponent<SoundObject>();
+                soundObjectPrefab.transform.parent = transform;
+            }
+            
         }
 
         //리쿼스트를 여기서하고
@@ -34,6 +43,10 @@ namespace lLCroweTool.Sound
 
         public void PlaySound3DAtVector3(AudioClip audioClip, Vector3 pos)
         {
+            if (ReferenceEquals(null, audioClip) )
+            {
+                return;
+            }
             var target = ObjectPoolManager.Instance.RequestDynamicComponentObject(soundObjectPrefab);
             target.transform.SetParent(transform);
             target.InitTrObjPrefab(pos,transform);
