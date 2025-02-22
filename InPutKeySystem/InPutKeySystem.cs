@@ -2,17 +2,20 @@
 using UnityEngine;
 using lLCroweTool.Singleton;
 
-namespace lLCroweTool
+namespace lLCroweTool.InputKey
 {
     /// <summary>
     /// 인풋키 타입
     /// </summary>
     public enum InputKeyType
     {
-        GetKey,
-        GetKeyDown,
-        GetKeyUp,
-        GetKeyDoubleClick,
+        KeyPress,
+        KeyDown,
+        KeyUp,
+
+        
+        KeyDownDoubleClick,
+        KeyUpDoubleClick,
     }
 
     /// <summary>
@@ -22,12 +25,21 @@ namespace lLCroweTool
     public class KeyData
     {
         [SerializeField] public string keyName;
+#if ENABLE_INPUT_SYSTEM
+
+#elif ENABLE_LEGACY_INPUT_MANAGER
+            
+#endif
+
         [SerializeField] public KeyCode keyCode;
+
+
+
         [SerializeField] public InputKeyType inputKeyType;
         public System.Action action;
 
         //더블클릭관련
-        private static KeyCode inputKey;
+        private static KeyCode lastInputKey;
         private static float lastInputTime;
         public static float doubleClickTimeThreshold = 0.3f;
 
@@ -38,9 +50,9 @@ namespace lLCroweTool
         /// <param name="inputKeyType">인풋키 타입</param>
         /// <param name="action">액션</param>
         /// /// <param name="keyName">키이름</param>
-        public KeyData(KeyCode keyCode, InputKeyType inputKeyType, System.Action action, string keyName)
+        public KeyData(string keyName, KeyCode keyCode, InputKeyType inputKeyType, System.Action action)
         {   
-            this.keyCode = keyCode;
+            this.keyCode = keyCode; 
             this.inputKeyType = inputKeyType;
             this.action = action;
             this.keyName = keyName;
@@ -82,16 +94,126 @@ namespace lLCroweTool
                     break;
                 case InputKeyType.GetKeyDoubleClick:
                     if (!Input.GetKeyDown(keyCode)) { return; }
-                    if (doubleClickTimeThreshold < Time.time - lastInputTime || inputKey != keyCode) { inputKey = keyCode; lastInputTime = Time.time; return; }
+                    if (doubleClickTimeThreshold < Time.time - lastInputTime || lastInputKey != keyCode) { lastInputKey = keyCode; lastInputTime = Time.time; return; }
                     break;
             }
             action?.Invoke();
 
 
 //#if CommandKey
-            
+            //커맨드시스템과 연동
             
 //#endif
+        }
+    }
+
+    #region 인풋처리 구역
+
+    public static class KeyDataExtend
+    {
+        /// <summary>
+        /// 아무 키를 눌렸을때 체크하는 함수
+        /// </summary>
+        /// <returns>눌렷는지 여부</returns>
+        public static bool InputAnyKey()
+        {
+            var key = UnityEngine.InputSystem.Keyboard.current.anyKey.isPressed;
+            //마우스쪽은 애니키관련된게 없음
+            var leftMouse = InputKey(UnityEngine.InputSystem.LowLevel.MouseButton.Left, InputKeyType.KeyPress);
+            var rightMouse = InputKey(UnityEngine.InputSystem.LowLevel.MouseButton.Right, InputKeyType.KeyPress);
+
+            var result = key || leftMouse || rightMouse;
+            //Debug.Log(result);
+            return result;
+        }
+
+        /// <summary>
+        /// 키를 눌렷을때 인풋키 타입에 따라 체크하는 함수
+        /// </summary>
+        /// <param name="keyCode">키</param>
+        /// <param name="inputKeyType">인풋 키타입</param>
+        /// <returns>눌렷는지 여부</returns>
+        public static bool InputKey(this UnityEngine.InputSystem.Key keyCode, in InputKeyType inputKeyType)
+        {
+            var key = UnityEngine.InputSystem.Keyboard.current[keyCode];
+            switch (inputKeyType)
+            {
+                case InputKeyType.KeyDown: return key.wasPressedThisFrame;
+                case InputKeyType.KeyUp: return key.wasReleasedThisFrame;
+                case InputKeyType.KeyPress: return key.isPressed;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 키를 눌렷을때 인풋키 타입에 따라 체크하는 함수
+        /// </summary>
+        /// <param name="keyCode">키</param>
+        /// <param name="inputKeyType">인풋 키타입</param>
+        /// <returns>눌렷는지 여부</returns>
+        public static bool InputKey(this UnityEngine.InputSystem.LowLevel.MouseButton keyCode, in InputKeyType inputKeyType)
+        {
+            UnityEngine.InputSystem.Controls.ButtonControl key = null;
+            switch (keyCode)
+            {
+                case UnityEngine.InputSystem.LowLevel.MouseButton.Left:
+                    key = UnityEngine.InputSystem.Mouse.current.leftButton;
+                    break;
+                case UnityEngine.InputSystem.LowLevel.MouseButton.Right:
+                    key = UnityEngine.InputSystem.Mouse.current.rightButton;
+                    break;
+                case UnityEngine.InputSystem.LowLevel.MouseButton.Middle:
+                    key = UnityEngine.InputSystem.Mouse.current.middleButton;
+                    break;
+                case UnityEngine.InputSystem.LowLevel.MouseButton.Forward:
+                case UnityEngine.InputSystem.LowLevel.MouseButton.Back:
+                    //지원안함
+                    return false;
+            }
+
+            switch (inputKeyType)
+            {
+                case InputKeyType.KeyDown: return key.wasPressedThisFrame;
+                case InputKeyType.KeyUp: return key.wasReleasedThisFrame;
+                case InputKeyType.KeyPress: return key.isPressed;
+            }
+            return false;
+        }
+
+        public static Vector2 GetMousePosition()
+        {
+            return UnityEngine.InputSystem.Mouse.current.position.ReadValue();
+        }
+
+        /// <summary>
+        /// 아무 키를 눌렸을때 체크하는 함수
+        /// </summary>
+        /// <returns>눌렷는지 여부</returns>
+        public static bool InputAnyKey()
+        {
+            return Input.anyKey;
+        }
+
+        /// <summary>
+        /// 인풋키 타입에 따른 키값을 가져오는 함수
+        /// </summary>
+        /// <param name="keyCode">키</param>
+        /// <param name="inputKeyType">인풋 키타입</param>
+        /// <returns>눌렷는가</returns>
+        public static bool InputKey(this KeyCode keyCode, in InputKeyType inputKeyType)
+        {
+            switch (inputKeyType)
+            {
+                case InputKeyType.KeyDown: return Input.GetKeyDown(keyCode);
+                case InputKeyType.KeyUp: return Input.GetKeyUp(keyCode);
+                case InputKeyType.KeyPress: return Input.GetKey(keyCode);
+            }
+            return false;
+        }
+
+        public static Vector2 GetMousePosition()
+        {
+            return Input.mousePosition;
         }
 
         /// <summary>
@@ -103,170 +225,7 @@ namespace lLCroweTool
             doubleClickTimeThreshold = timer;
         }
     }
-
-
-#if CommandKey
-    //심볼로 처리
-    public class CommandSystem
-    {
-        public TimerModule_Element timer;
-        public List<CommandKey> keyCodes = new List<CommandKey>();//입력키코드
-        public Dictionary<KeyCode, CommandKey> key = new();
-
-        [System.Serializable] public class CommandBible : CustomDictionary<CommandKey[], System.Action> { };
-        public CommandBible commandBible = new();
-
-        public class CommandKeyData
-        {
-            public CommandKey[] commandKeyArray;
-            public System.Action action;
-        }
-
-
-        //커맨드키 세팅
-        //스킬시스템도 이걸 체크
-        public enum CommandKey
-        {
-            //방향키
-            Up,
-            Down,
-            Left,
-            Right,
-
-            //마우스버튼
-            LeftMouse,
-            RightMouse,
-        }
-
-        public void Init()
-        {
-            timer.SetTimer(0.3f);
-            var temp = typeof(CommandSystem);
-            LogSystem.LogManager.Register(temp, temp.Name, true, true);
-        }
-
-        public void SetCommandDataArray(CommandKeyData[] commandDataArray)
-        {
-            //키체크
-            //커맨드 체크
-            commandBible.Clear();
-            for (int i = 0; i < commandDataArray.Length; i++)
-            {
-                commandBible.Add(commandDataArray[i].commandKeyArray, commandDataArray[i].action);
-            }
-        }
-
-        public void InputKey(KeyCode keyCode)
-        {
-            keyCodes.Add(CommandKey.Right);
-            timer.ResetTime();
-        }
-
-        public void Update()
-        {
-            if (!timer.CheckTimer())
-            {
-                return;
-            }
-
-            //분할처리
-
-            ResetInputList(); 
-            CheckCommandKey();
-        }
-
-        public void ResetInputList()
-        {
-            //if (keyCodes.Count < 3)
-            //{
-            //    return;
-            //}
-
-            //List<CommandKey> splitInputKey = new List<CommandKey>();//자르는 키값들
-            //CommandKey[] keys = new CommandKey[3];//값비교를 위한 선언
-            //bool isFindSkill = false;
-            //int spriteNum = 3;
-            ////입력한 키코드에서 3번째까지만 잘라서 집어넣는곳
-            //for (int i = 0; i < keyCodes.Count; i++)
-            //{
-            //    if (i > spriteNum - 1)
-            //    {
-            //        break;
-            //    }
-            //    keys[i] = keyCodes[i];
-            //    splitInputKey.Add(keyCodes[i]);
-            //}
-
-            ////커맨드리스트에 있는 커맨드스킬과 비교하여 같으면 스킬 발동
-            ////리스트안의 값을 꺼내서 값을 비교함 //값비교 //잘됨
-            //bool[] IsRights = new bool[3];
-            //for (int i = 0; i < commandDataArray.Length; i++)
-            //{
-            //    //초기화
-            //    isFindSkill = true;
-            //    for (int j = 0; j < IsRights.Length; j++)
-            //    {
-            //        IsRights[j] = false;
-            //    }
-
-            //    //커맨드키 리스트값을 가져와서는 비교
-            //    //해당키값마다 비교해서 맞는지 틀린지 체크하는 구역
-            //    for (int j = 0; j < commandDataArray[i].commandkeys.Length; j++)
-            //    {
-            //        if (keys[j] == commandDataArray[i].commandkeys[j])
-            //        {
-            //            IsRights[j] = true;
-            //        }
-            //    }
-
-            //    //집어넣은 키값들이 다 옳으면 스킬을 찾은걸로 간주
-            //    for (int j = 0; j < IsRights.Length; j++)
-            //    {
-            //        if (!IsRights[j])
-            //        {
-            //            isFindSkill = false;
-            //        }
-            //    }
-
-            //    //스킬을 찾았으면 빠져나오고 스킬발동
-            //    if (isFindSkill)
-            //    {
-            //        //기능구현 //해당번호의 커맨드스킬 반환 or 작동
-            //        //string 값을 반환시키는게 좋아보인다.
-            //        //ActiveSkill(commandDataArray[i].targetSkillData.targetSkillPrefab);
-            //        Debug.Log(i - 1 + " 번째에 스킬이 있습니다.");
-
-            //        break;
-            //    }
-            //}
-            //splitInputKey.Clear();
-
-            ////커맨드타임입력종료&&초기화
-            //keyCodes.Clear();
-        }
-
-
-
-        private void CheckCommandKey()
-        {
-            //커맨드키관련체크
-            if (keyCodes.Count < 3)
-            {
-                return;
-            }
-            if (commandBible.ContainsKey(keyCodes.ToArray()))
-            {
-                //스킬작동
-                //LogSystem.LogManager.Log(typeof(CommandSystemManager), "커맨드스킬작동", unitObject, LogManager.LogType.Info);
-
-                //해당유닛으로부터 스킬이 작동되게
-                Debug.Log("작동");
-            }
-            keyCodes.Clear();
-        }
-    }
-
-#endif
+    #endregion
 
     /// <summary>
     /// 게임에 사용하는 인풋키처리를 위한 시스템클래스
@@ -323,11 +282,7 @@ namespace lLCroweTool
         private void Update()
         {
             //인풋마우스로부터 시작함//다른걸 스크린2뭐시갱이 정류에 넣지말기
-#if ENABLE_INPUT_SYSTEM
-            mouseScreenPosition = UnityEngine.InputSystem.Mouse.current.position.ReadValue();
-#elif ENABLE_LEGACY_INPUT_MANAGER
-            mouseScreenPosition = Input.mousePosition;
-#endif
+            mouseScreenPosition = KeyDataExtend.GetMousePosition();
             mouseRay = camera.ScreenPointToRay(mouseScreenPosition);
             mouseScreenPosition.z = mouseScreenDistance;
             mouseWorldPosition = camera.ScreenToWorldPoint(mouseScreenPosition);
@@ -417,6 +372,8 @@ namespace lLCroweTool
             return keyDataList;
         }
 
+      
+    
 
         protected override void OnDestroy()
         {
