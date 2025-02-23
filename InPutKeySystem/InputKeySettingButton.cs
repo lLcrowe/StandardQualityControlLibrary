@@ -26,7 +26,13 @@ namespace lLCroweTool
         /// <param name="keyCode">지정된 키코드</param>
         /// <param name="buttonAction">버튼눌렸을시 이벤트</param>
         /// <param name="targetColor">버튼눌렸을시 변경색깔</param>
+
+#if ENABLE_INPUT_SYSTEM
+        public void InitInputSettingUICard(string keyContent, UnityEngine.InputSystem.Key keyCode, UnityAction buttonAction, Color targetColor)
+#elif ENABLE_LEGACY_INPUT_MANAGER
         public void InitInputSettingUICard(string keyContent, KeyCode keyCode ,UnityAction buttonAction, Color targetColor)
+#endif
+
         {
             //현지화구역
             textContent.text = keyContent;

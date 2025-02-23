@@ -18,8 +18,13 @@ namespace lLCroweTool.UI.MainMenu
         //[SerializeField] private bool isInit = false;//초기화여부
         private bool isSetting = false;//키변경버튼을 누를시부터 작동되는 세팅중 여부
         private bool isCancel = false;//취소여부
-        private KeyCode targetKeyCode;//타겟팅할 키코드        
 
+
+#if ENABLE_INPUT_SYSTEM
+        private UnityEngine.InputSystem.Key targetKeyCode;//타겟팅할 키코드
+#elif ENABLE_LEGACY_INPUT_MANAGER
+        private KeyCode targetKeyCode;//타겟팅할 키코드        
+#endif
 
         protected void Awake()
         {
@@ -71,28 +76,29 @@ namespace lLCroweTool.UI.MainMenu
             StartCoroutine(UpdateKeySettingCoroutine(keyData, inputSettingButton, keyDataList));
         }
 
-        private void OnGUI()
-        {
-            //코루틴으로 인해 작동되고 있으면 그때부터 작동
-            if (isSetting)
-            {
-                Event @event = Event.current;
-                if (@event.isKey)
-                {
-                    targetKeyCode = @event.keyCode;
-                    isSetting = false;
-                    if (targetKeyCode == KeyCode.Escape)
-                    {
-                        isCancel = true;
-                    }
-                }
-                else if (@event.isMouse)
-                {   
-                    targetKeyCode = (KeyCode)@event.button + 323;
-                    isSetting = false;
-                }
-            }
-        }
+        //여기 바꿔야됨.//다른함수나 기능으로 대체하기
+        //private void OnGUI()
+        //{
+        //    //코루틴으로 인해 작동되고 있으면 그때부터 작동
+        //    if (isSetting)
+        //    {
+        //        Event @event = Event.current;
+        //        if (@event.isKey)
+        //        {
+        //            targetKeyCode = @event.keyCode;
+        //            isSetting = false;
+        //            if (targetKeyCode == KeyCode.Escape)
+        //            {
+        //                isCancel = true;
+        //            }
+        //        }
+        //        else if (@event.isMouse)
+        //        {   
+        //            targetKeyCode = (KeyCode)@event.button + 323;
+        //            isSetting = false;
+        //        }
+        //    }
+        //}
 
         private IEnumerator UpdateKeySettingCoroutine(KeyData keyData, InputKeySettingButton inputSettingButton,List<KeyData> keyDataList)
         {
@@ -127,9 +133,14 @@ namespace lLCroweTool.UI.MainMenu
                 yield return null;
             } while (true);
             inputSettingButton.ChangeButtonColor(Color.white);
+
         }
 
+#if ENABLE_INPUT_SYSTEM
+        private bool CheckOverlap(List<KeyData> keyDataList, UnityEngine.InputSystem.Key keyCode)
+#elif ENABLE_LEGACY_INPUT_MANAGER
         private bool CheckOverlap(List<KeyData> keyDataList, KeyCode keyCode)
+#endif
         {
             for (int i = 0; i < keyDataList.Count; i++)
             {

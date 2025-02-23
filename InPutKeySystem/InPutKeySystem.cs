@@ -28,30 +28,83 @@ namespace lLCroweTool.InputKey
         KeyUpDoubleClick,
     }
 
-
-
     //마우스는 별개로
-
     /// <summary>
     /// 키데이터
     /// </summary>
     [System.Serializable]
-    public class KeyData
+    public class MouseKeyData
     {
         [SerializeField] public string keyName;
-#if ENABLE_INPUT_SYSTEM
-
-#elif ENABLE_LEGACY_INPUT_MANAGER
-        [SerializeField] public KeyCode keyCode;
-        private static KeyCode lastInputKey;
-#endif
-
         [SerializeField] public InputKeyType inputKeyType;
         public System.Action action;
 
-        //더블클릭관련
-        private static float lastInputTime;
-        public static float doubleClickTimeThreshold = 0.3f;
+        public  UnityEngine.InputSystem.LowLevel.MouseButton keyCode;
+
+        /// <summary>
+        /// 키데이터
+        /// </summary>
+        /// <param name="keyCode">키코드</param>
+        /// <param name="inputKeyType">인풋키 타입</param>
+        /// <param name="action">액션</param>
+        /// /// <param name="keyName">키이름</param>
+        public MouseKeyData(string keyName, UnityEngine.InputSystem.LowLevel.MouseButton keyCode, InputKeyType inputKeyType, System.Action action)
+        {
+            this.keyCode = keyCode;
+            this.inputKeyType = inputKeyType;
+            this.action = action;
+            this.keyName = keyName;
+        }
+    }
+
+    
+    public class KeyData
+    {
+        [SerializeField] public string keyName;
+        [SerializeField] public InputKeyType inputKeyType;
+        public System.Action action;
+
+       
+
+#if ENABLE_INPUT_SYSTEM
+        [SerializeField] public UnityEngine.InputSystem.Key keyCode;
+        
+
+        /// <summary>
+        /// 키데이터
+        /// </summary>
+        /// <param name="keyCode">키코드</param>
+        /// <param name="inputKeyType">인풋키 타입</param>
+        /// <param name="action">액션</param>
+        /// /// <param name="keyName">키이름</param>
+        public KeyData(string keyName, UnityEngine.InputSystem.Key keyCode, InputKeyType inputKeyType, System.Action action)
+        {   
+            this.keyCode = keyCode; 
+            this.inputKeyType = inputKeyType;
+            this.action = action;
+            this.keyName = keyName;
+        }
+
+        /// <summary>
+        /// 키데이터
+        /// </summary>
+        /// <param name="keyName">키이름</param>
+        /// <param name="keyCode">키코드</param>
+        /// <param name="inputKeyType">인풋키 타입</param>
+        /// <param name="action">액션</param>
+        public void SetKeyData(string keyName, UnityEngine.InputSystem.Key keyCode, InputKeyType inputKeyType, System.Action action)
+        {
+            if (!string.IsNullOrEmpty(keyName))
+            {
+                this.keyName = keyName;
+            }
+            this.keyCode = keyCode;
+            this.inputKeyType = inputKeyType;
+            this.action = action;
+        }
+#elif ENABLE_LEGACY_INPUT_MANAGER
+        [SerializeField] public KeyCode keyCode;
+        private static KeyCode lastInputKey;
 
         /// <summary>
         /// 키데이터
@@ -61,8 +114,8 @@ namespace lLCroweTool.InputKey
         /// <param name="action">액션</param>
         /// /// <param name="keyName">키이름</param>
         public KeyData(string keyName, KeyCode keyCode, InputKeyType inputKeyType, System.Action action)
-        {   
-            this.keyCode = keyCode; 
+        {
+            this.keyCode = keyCode;
             this.inputKeyType = inputKeyType;
             this.action = action;
             this.keyName = keyName;
@@ -85,48 +138,67 @@ namespace lLCroweTool.InputKey
             this.inputKeyType = inputKeyType;
             this.action = action;
         }
-
+#endif
         /// <summary>
         /// 업데이트 키세팅
         /// </summary>
-        public void UpdateKey()
+        public bool UpdateKey()
         {
             switch (inputKeyType)
             {
                 case InputKeyType.KeyPress:
-                    if (!InputKeyUtil.InputKey(keyCode, InputKeyType.KeyPress)) { return; }
+                    if (!InputKeyUtil.InputKey(keyCode, InputKeyType.KeyPress)) { return false; }
                     break;
                 case InputKeyType.KeyDown:
-                    if (!InputKeyUtil.InputKey(keyCode, InputKeyType.KeyDown)) { return; }
+                    if (!InputKeyUtil.InputKey(keyCode, InputKeyType.KeyDown)) { return false; }
                     break;
                 case InputKeyType.KeyUp:
-                    if (!InputKeyUtil.InputKey(keyCode, InputKeyType.KeyUp)) { return; }
+                    if (!InputKeyUtil.InputKey(keyCode, InputKeyType.KeyUp)) { return false; }
                     break;
                 case InputKeyType.KeyDownDoubleClick:
-                    if (!InputKeyUtil.InputKey(keyCode, InputKeyType.KeyDown)) { return; }
-                    if (doubleClickTimeThreshold < Time.time - lastInputTime || lastInputKey != keyCode) { lastInputKey = keyCode; lastInputTime = Time.time; return; }
+                    if (!InputKeyUtil.InputKey(keyCode, InputKeyType.KeyDown)) { return false; }
+                    if (CheckDoubleClickTime()) {  return false; }
                     break;
                 case InputKeyType.KeyUpDoubleClick:
-                    if (!InputKeyUtil.InputKey(keyCode, InputKeyType.KeyUp)) { return; }
-                    if (doubleClickTimeThreshold < Time.time - lastInputTime || lastInputKey != keyCode) { lastInputKey = keyCode; lastInputTime = Time.time; return; }
+                    if (!InputKeyUtil.InputKey(keyCode, InputKeyType.KeyUp)) { return false; }
+                    if (CheckDoubleClickTime()) { return false; }
                     break;
             }
 
             action?.Invoke();
-#if CommandKey
+            return true;
+        }
 
+        private bool CheckDoubleClickTime()
+        {
+            if (InputKeyUtil.doubleClickTimeThreshold < Time.time - InputKeyUtil.lastInputTime || InputKeyUtil.lastInputKey != keyCode) 
+            { 
+                InputKeyUtil.lastInputKey = keyCode; InputKeyUtil.lastInputTime = Time.time; 
+                return false; 
+            }
+            return true;
+        }
+
+       
+    }
+
+    #region 인풋처리 구역
+
+    public static class InputKeyUtil
+    {
+        //더블클릭관련
+        public static float lastInputTime;
+        public static float doubleClickTimeThreshold = 0.3f;
 
 #if ENABLE_INPUT_SYSTEM
+        public static UnityEngine.InputSystem.Key lastInputKey;
+        public static UnityEngine.InputSystem.LowLevel.MouseButton lastInputMouseKey;
 
 #elif ENABLE_LEGACY_INPUT_MANAGER
-
+        private static KeyCode lastInputKey;
 #endif
-            //커맨드시스템과 연동
-            Debug.Log($"{keyCode}");
 
 
-#endif
-        }
 
         /// <summary>
         /// 더블클릭 임계값을 세팅하는 함수
@@ -136,19 +208,14 @@ namespace lLCroweTool.InputKey
         {
             doubleClickTimeThreshold = timer;
         }
-    }
 
-    #region 인풋처리 구역
-
-    public static class InputKeyUtil
-    {
 #if ENABLE_INPUT_SYSTEM
         /// <summary>
         /// 아무 키를 눌렸을때 체크하는 함수
         /// </summary>
         /// <returns>눌렷는지 여부</returns>
         public static bool InputAnyKey()
-        {
+        {   
             var key = UnityEngine.InputSystem.Keyboard.current.anyKey.isPressed;
             //마우스쪽은 애니키관련된게 없음
             var leftMouse = InputKey(UnityEngine.InputSystem.LowLevel.MouseButton.Left, InputKeyType.KeyPress);
@@ -167,6 +234,7 @@ namespace lLCroweTool.InputKey
         /// <returns>눌렷는지 여부</returns>
         public static bool InputKey(this UnityEngine.InputSystem.Key keyCode, in InputKeyType inputKeyType)
         {
+            var test = UnityEngine.InputSystem.Mouse.current;
             var key = UnityEngine.InputSystem.Keyboard.current[keyCode];
             switch (inputKeyType)
             {
@@ -279,6 +347,12 @@ namespace lLCroweTool.InputKey
 
         //최근에 만들게 제일베이스가 괜찮긴하다
         //쓰기편하게+관리편하게+이식하면 금방쓰게
+
+
+        [SerializeField] private List<MouseKeyData> mouseKeyDataList = new List<MouseKeyData>(10);
+
+
+
         [SerializeField] private List<KeyData> normalKeyDataList = new List<KeyData>(10);
         [SerializeField] private List<KeyData> secondaryKeyDataList = new List<KeyData>(10);
 
@@ -327,14 +401,26 @@ namespace lLCroweTool.InputKey
             for (int i = 0; i < normalKeyDataList.Count; i++)
             {
                 var key = normalKeyDataList[i];
-                key.UpdateKey();
+                if (!key.UpdateKey())
+                {
+                    continue;
+                }
+#if CommandKey
+                commandSystem.InputKey(key.keyCode);
+#endif
             }
 
             //세컨드키
             for (int i = 0; i < secondaryKeyDataList.Count; i++)
             {
                 var key = secondaryKeyDataList[i];
-                key.UpdateKey();
+                if (!key.UpdateKey())
+                {
+                    continue;
+                }
+#if CommandKey
+                commandSystem.InputKey(key.keyCode);
+#endif
             }
 
             //인풋용 업데이트//플레이어용 
@@ -354,14 +440,14 @@ namespace lLCroweTool.InputKey
         /// <param name="keyCode">키코드</param>
         /// <param name="inputKeyType">인풋키 타입</param>
         /// <param name="action">액션</param>
+        /// 
+#if ENABLE_INPUT_SYSTEM
+        public void AddKeyData(bool isNormalKey, string keyName, UnityEngine.InputSystem.Key keyCode, InputKeyType inputKeyType, System.Action action)
+#elif ENABLE_LEGACY_INPUT_MANAGER
         public void AddKeyData(bool isNormalKey, string keyName, KeyCode keyCode, InputKeyType inputKeyType, System.Action action)
-        {
-            //여기 수정하기
-#if CommandKey
-            var keyData = new KeyData(keyName, keyCode, inputKeyType, ()=> { action?.Invoke(); commandSystem.InputKey(keyCode); });           
-#else
-            var keyData = new KeyData(keyName, keyCode, inputKeyType, action);
 #endif
+        {
+            var keyData = new KeyData(keyName, keyCode, inputKeyType, action);
             var keyDataList = GetKeyDataList(isNormalKey);
             keyDataList.Add(keyData);
         }
@@ -371,6 +457,13 @@ namespace lLCroweTool.InputKey
             var keyDataList = GetKeyDataList(isNormalKey);
             keyDataList.AddRange(keyDataArray);
         }
+#if ENABLE_INPUT_SYSTEM
+        public void AddMouseKeyData(bool isNormalKey, ICollection<KeyData> keyDataArray)
+        {
+            var keyDataList = GetKeyDataList(isNormalKey);
+            keyDataList.AddRange(keyDataArray);
+        }
+#endif
 
         public KeyData GetKeyData(bool isNormalKey, string keyName)
         {
@@ -392,7 +485,11 @@ namespace lLCroweTool.InputKey
             return null;
         }
 
+#if ENABLE_INPUT_SYSTEM
+        public void SetButtonAction(in bool isNormalKey, in UnityEngine.InputSystem.Key keyCode, in CustomButton customButton)
+#elif ENABLE_LEGACY_INPUT_MANAGER
         public void SetButtonAction(in bool isNormalKey, in KeyCode keyCode,in CustomButton customButton)
+#endif
         {
             var keyDataList = GetKeyDataList(isNormalKey);
             for (int i = 0; i < keyDataList.Count; i++)

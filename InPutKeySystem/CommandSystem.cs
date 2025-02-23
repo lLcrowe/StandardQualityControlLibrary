@@ -11,37 +11,33 @@ namespace lLCroweTool.InputKey
     public class CommandSystem
     {
         public TimerModule_Element timer;
-        public List<CommandKey> keyCodes = new List<CommandKey>();//입력키코드
-        public Dictionary<KeyCode, CommandKey> key = new();
 
-
-
-        [System.Serializable] public class CommandBible : CustomDictionary<CommandKey[], System.Action> { };
+#if ENABLE_INPUT_SYSTEM
+        public List<UnityEngine.InputSystem.Key> keyCodeList = new();//입력키코드        
+        [System.Serializable] public class CommandBible : CustomDictionary<UnityEngine.InputSystem.Key[], System.Action> { };
         public CommandBible commandBible = new();
 
         public class CommandKeyData
         {
-            public CommandKey[] commandKeyArray;
+            public UnityEngine.InputSystem.Key[] keyArray = new UnityEngine.InputSystem.Key[0];
             public System.Action action;
         }
+#elif ENABLE_LEGACY_INPUT_MANAGER
+        public List<KeyCode> keyCodeList = new ();//입력키코드        
+        [System.Serializable] public class CommandBible : CustomDictionary<KeyCode[], System.Action> { };
+        public CommandBible commandBible = new();
+
+        public class CommandKeyData
+        {
+            public KeyCode[] keyArray = new KeyCode[0];
+            public System.Action action;
+        }
+#endif
+
+
 
 
         //이걸 그냥 키코드로 처리하는것도 괜찮음.
-
-        //커맨드키 세팅
-        //스킬시스템도 이걸 체크
-        public enum CommandKey
-        {
-            //방향키
-            Up,
-            Down,
-            Left,
-            Right,
-
-            //마우스버튼
-            LeftMouse,
-            RightMouse,
-        }
 
         public void Init()
         {
@@ -57,13 +53,20 @@ namespace lLCroweTool.InputKey
             commandBible.Clear();
             for (int i = 0; i < commandDataArray.Length; i++)
             {
-                commandBible.Add(commandDataArray[i].commandKeyArray, commandDataArray[i].action);
+                commandBible.Add(commandDataArray[i].keyArray, commandDataArray[i].action);
             }
         }
 
+#if ENABLE_INPUT_SYSTEM
+        public void InputKey(UnityEngine.InputSystem.Key keyCode)
+#elif ENABLE_LEGACY_INPUT_MANAGER
         public void InputKey(KeyCode keyCode)
+#endif
         {
-            keyCodes.Add(CommandKey.Right);
+
+            
+
+            keyCodeList.Add(keyCode);
             timer.ResetTime();
         }
 
@@ -75,7 +78,6 @@ namespace lLCroweTool.InputKey
             }
 
             //분할처리
-
             ResetInputList(); 
             CheckCommandKey();
         }
@@ -151,15 +153,15 @@ namespace lLCroweTool.InputKey
         }
 
 
-
+        //이거 작동되는건가? 이상하네
         private void CheckCommandKey()
         {
             //커맨드키관련체크
-            if (keyCodes.Count < 3)
+            if (keyCodeList.Count < 3)
             {
                 return;
             }
-            if (commandBible.ContainsKey(keyCodes.ToArray()))
+            if (commandBible.ContainsKey(keyCodeList.ToArray()))
             {
                 //스킬작동
                 //LogSystem.LogManager.Log(typeof(CommandSystemManager), "커맨드스킬작동", unitObject, LogManager.LogType.Info);
@@ -167,7 +169,7 @@ namespace lLCroweTool.InputKey
                 //해당유닛으로부터 스킬이 작동되게
                 Debug.Log("작동");
             }
-            keyCodes.Clear();
+            keyCodeList.Clear();
         }
     }
 }
