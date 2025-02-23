@@ -298,6 +298,7 @@ namespace lLCroweTool.PathFinder
             else if (astarAI is AILerp aiLerp) { aiLerp.updateRotation = isUseRotate; return; }
 
             //5.1
+            //이 스크립트는 아직 베타 상태이며 앞으로 변경될 수 있습니다. AIPath/RichAI보다 훨씬 더 견고해지려고 하지만 여전히 거친 부분이 있을 수 있습니다.
             //else if (astarAI is FollowerEntity follower){follower.updateRotation = isUseRotate; return;}
         }
 
@@ -307,6 +308,7 @@ namespace lLCroweTool.PathFinder
             else if (aI is AILerp aiLerp) aiLerp.enabled = value;
 
             //5.1
+            //이 스크립트는 아직 베타 상태이며 앞으로 변경될 수 있습니다. AIPath/RichAI보다 훨씬 더 견고해지려고 하지만 여전히 거친 부분이 있을 수 있습니다.
             //else if (aI is FollowerEntity follower)follower.enabled = value;
         }
 

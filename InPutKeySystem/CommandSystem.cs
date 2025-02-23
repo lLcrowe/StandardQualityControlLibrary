@@ -14,6 +14,8 @@ namespace lLCroweTool.InputKey
         public List<CommandKey> keyCodes = new List<CommandKey>();//입력키코드
         public Dictionary<KeyCode, CommandKey> key = new();
 
+
+
         [System.Serializable] public class CommandBible : CustomDictionary<CommandKey[], System.Action> { };
         public CommandBible commandBible = new();
 
@@ -23,6 +25,8 @@ namespace lLCroweTool.InputKey
             public System.Action action;
         }
 
+
+        //이걸 그냥 키코드로 처리하는것도 괜찮음.
 
         //커맨드키 세팅
         //스킬시스템도 이걸 체크
