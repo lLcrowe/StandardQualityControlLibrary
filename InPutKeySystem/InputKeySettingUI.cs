@@ -20,7 +20,7 @@ namespace lLCroweTool.UI.MainMenu
         private bool isCancel = false;//취소여부
 
 
-#if ENABLE_INPUT_SYSTEM
+#if UNITY_INPUT_SYSTEM_PACKAGE
         private UnityEngine.InputSystem.Key targetKeyCode;//타겟팅할 키코드
 #elif ENABLE_LEGACY_INPUT_MANAGER
         private KeyCode targetKeyCode;//타겟팅할 키코드        
@@ -42,22 +42,22 @@ namespace lLCroweTool.UI.MainMenu
         public void InitInputSettingUI()
         {
             var instance = InPutKeySystem.Instance;
-            var normalKeyBible = instance.NormalKeyDataList;
-            var secondaryKeyBible = instance.SecondaryKeyDataList;
+            //var normalKeyBible = instance.NormalKeyDataList;
+            //var secondaryKeyBible = instance.SecondaryKeyDataList;
 
-            foreach (var item in normalKeyBible)
-            {
-                InputKeySettingButton temp = ObjectPoolManager.Instance.RequestDynamicComponentObject(inputKeySettingButtonPrefab);
-                temp.transform.SetParent(buttonPosArray[0]);
-                temp.InitInputSettingUICard(item.keyName, item.keyCode, ()=> InputKeySettingButtonFunc(item, temp, normalKeyBible), selectColor);
-            }
+            //foreach (var item in normalKeyBible)
+            //{
+            //    InputKeySettingButton temp = ObjectPoolManager.Instance.RequestDynamicComponentObject(inputKeySettingButtonPrefab);
+            //    temp.transform.SetParent(buttonPosArray[0]);
+            //    temp.InitInputSettingUICard(item.keyName, item.keyCode, ()=> InputKeySettingButtonFunc(item, temp, normalKeyBible), selectColor);
+            //}
 
-            foreach (var item in secondaryKeyBible)
-            {
-                InputKeySettingButton temp = ObjectPoolManager.Instance.RequestDynamicComponentObject(inputKeySettingButtonPrefab);
-                temp.transform.SetParent(buttonPosArray[1]);
-                temp.InitInputSettingUICard(item.keyName, item.keyCode, ()=> InputKeySettingButtonFunc(item, temp, secondaryKeyBible), selectColor);
-            }
+            //foreach (var item in secondaryKeyBible)
+            //{
+            //    InputKeySettingButton temp = ObjectPoolManager.Instance.RequestDynamicComponentObject(inputKeySettingButtonPrefab);
+            //    temp.transform.SetParent(buttonPosArray[1]);
+            //    temp.InitInputSettingUICard(item.keyName, item.keyCode, ()=> InputKeySettingButtonFunc(item, temp, secondaryKeyBible), selectColor);
+            //}
         }
 
         /// <summary>
@@ -136,7 +136,7 @@ namespace lLCroweTool.UI.MainMenu
 
         }
 
-#if ENABLE_INPUT_SYSTEM
+#if UNITY_INPUT_SYSTEM_PACKAGE
         private bool CheckOverlap(List<KeyData> keyDataList, UnityEngine.InputSystem.Key keyCode)
 #elif ENABLE_LEGACY_INPUT_MANAGER
         private bool CheckOverlap(List<KeyData> keyDataList, KeyCode keyCode)

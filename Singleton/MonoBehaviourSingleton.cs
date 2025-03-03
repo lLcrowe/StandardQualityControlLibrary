@@ -2,6 +2,7 @@
 
 namespace lLCroweTool.Singleton
 {
+    [DefaultExecutionOrder(-1000)]
     public abstract class MonoBehaviourSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         //목적에 따라 씬마다 유지되지 않는 싱글톤이 있다.//고로 제작

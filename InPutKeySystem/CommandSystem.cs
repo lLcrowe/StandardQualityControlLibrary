@@ -7,12 +7,14 @@ using UnityEngine;
 namespace lLCroweTool.InputKey
 {
 
+    //20250303
+    //기본올드 키버전으로 처리
     //심볼로 처리
     public class CommandSystem
     {
         public TimerModule_Element timer;
 
-#if ENABLE_INPUT_SYSTEM
+#if UNITY_INPUT_SYSTEM_PACKAGE
         public List<UnityEngine.InputSystem.Key> keyCodeList = new();//입력키코드        
         [System.Serializable] public class CommandBible : CustomDictionary<UnityEngine.InputSystem.Key[], System.Action> { };
         public CommandBible commandBible = new();
@@ -57,7 +59,7 @@ namespace lLCroweTool.InputKey
             }
         }
 
-#if ENABLE_INPUT_SYSTEM
+#if UNITY_INPUT_SYSTEM_PACKAGE
         public void InputKey(UnityEngine.InputSystem.Key keyCode)
 #elif ENABLE_LEGACY_INPUT_MANAGER
         public void InputKey(KeyCode keyCode)
