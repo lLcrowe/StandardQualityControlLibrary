@@ -17,11 +17,15 @@ namespace lLCroweTool.InputKey
 {
     public class KeyData
     {
+        //20250303
+        //작동방식이 변경됨
+        //초기에 KeyData에 해당되는 기능이름과 인풋타입 키를 집어넣고
+        //후에 다른곳에서 기능이름에 기능을 집어넣는 방식으로 변경.
+
+
         [SerializeField] public string keyName;
         [SerializeField] public InputKeyType inputKeyType;
         public System.Action action;
-        public KeyCode keyCode;
-
 
         /// <summary>
         /// 키데이터
@@ -29,12 +33,11 @@ namespace lLCroweTool.InputKey
         /// <param name="keyName">키이름</param>
         /// <param name="inputKeyType">인풋키 타입</param>
         /// <param name="action">액션</param>
-        public KeyData(string keyName, KeyCode keyCode, InputKeyType inputKeyType, System.Action action = null)
+        public KeyData(string keyName, InputKeyType inputKeyType, System.Action action = null)
         {
             this.keyName = keyName;
             this.inputKeyType = inputKeyType;
             this.action = action;
-            this.keyCode = keyCode;
         }
     }
 
@@ -106,11 +109,11 @@ namespace lLCroweTool.InputKey
             //정의
             var keyDataArray = new KeyData[]
             {
-                new KeyData("LeftKey", KeyCode.A, InputKeyType.KeyPress),
-                new KeyData("RightKey", KeyCode.D,InputKeyType.KeyPress),
-                new KeyData("UpKey", KeyCode.W, InputKeyType.KeyPress),
-                new KeyData("DownKey", KeyCode.S,  InputKeyType.KeyPress),
-                new KeyData("Fire", KeyCode.Mouse0,InputKeyType.KeyPress),
+                new KeyData("LeftKey",  InputKeyType.KeyPress),
+                new KeyData("RightKey", InputKeyType.KeyPress),
+                new KeyData("UpKey",  InputKeyType.KeyPress),
+                new KeyData("DownKey",   InputKeyType.KeyPress),
+                new KeyData("Fire", InputKeyType.KeyPress),
             };
 
 
@@ -118,9 +121,31 @@ namespace lLCroweTool.InputKey
             foreach (var item in keyDataArray)
             {
                 keyDataBible.Add(item.keyName, item);
+                keyEventBible.Add(item.keyName, KeyCode.None);
             }
+
+#if CommandKey
+            //커맨드키 정의
+
+
+            //등록
+
+#endif
         }
-        public void TryGetKeyDataAction(string name, System.Action action)
+
+        public void SetKeyData(in string name, in KeyCode keyCode, in System.Action action)
+        {
+            if (!keyDataBible.TryGetValue(name, out var keyData))
+            {
+                return;
+            }
+
+            //키액션, 키이벤트 재등록
+            keyData.action = action;
+            keyEventBible[name] = keyCode;
+        }
+
+        public void SetKeyDataAction(string name, System.Action action)
         {   
             if (!keyDataBible.TryGetValue(name,out KeyData keyData))
             {
@@ -165,15 +190,21 @@ namespace lLCroweTool.InputKey
             {
                 var key = keyData.Key;
                 var data = keyData.Value;
+
+
+                if (!keyEventBible.TryGetValue(key, out var keyCode))
+                {
+                    continue;
+                }
                 
-                if (!InputKey(data))
+                if (!InputKey(data, keyCode))
                 {
                     continue;
                 }
                 data.action?.Invoke();
 
 #if CommandKey
-                commandSystem.InputKey(data.keyCode);
+                commandSystem.InputKey(keyCode);
 #endif
             }
 
@@ -186,9 +217,8 @@ namespace lLCroweTool.InputKey
 #endif
         }
 
-        private bool InputKey(in KeyData keyData)
-        {
-            var keyCode = keyData.keyCode;
+        private bool InputKey(in KeyData keyData, in KeyCode keyCode)
+        {   
             var inputKeyType = keyData.inputKeyType;
             switch (inputKeyType)
             {
