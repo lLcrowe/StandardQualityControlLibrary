@@ -1,8 +1,7 @@
 ﻿using lLCroweTool.Singleton;
-using System;
-using System.Collections;
+using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Experimental.AI;
 
 namespace lLCroweTool.Sound
 {
@@ -12,6 +11,8 @@ namespace lLCroweTool.Sound
         public Transform audioListenerTr;
         public SoundObject soundObjectPrefab;
         public float distance;
+
+        public Queue<SoundObject> activeSoundObjectQueue = new Queue<SoundObject>(24);
 
         protected override void Init()
         {
@@ -24,7 +25,6 @@ namespace lLCroweTool.Sound
                 soundObjectPrefab = go.AddComponent<SoundObject>();
                 soundObjectPrefab.transform.parent = transform;
             }
-            
         }
 
         //리쿼스트를 여기서하고
@@ -48,10 +48,55 @@ namespace lLCroweTool.Sound
                 return;
             }
             var target = ObjectPoolManager.Instance.RequestDynamicComponentObject(soundObjectPrefab);
+            activeSoundObjectQueue.Enqueue(target);
+
+            if (activeSoundObjectQueue.Count > 24)
+            {
+                do
+                {
+                    var sound =  activeSoundObjectQueue.Dequeue();
+                    if (!sound.isActiveAndEnabled)
+                    {
+                        continue;
+                    }
+
+                    sound.SetActive(false);
+
+                    if (activeSoundObjectQueue.Count > 8)
+                    {
+                        continue;
+                    }
+                    break;
+
+                } while (true);
+            }
+            
+
+
             target.transform.SetParent(transform);
             target.InitTrObjPrefab(pos,transform);
+
+#if SteamAudio
+            InitSteamAudio(target.audioSource, audioClip);
+#endif
+
             target.Action(audioClip);
         }
+
+#if SteamAudio
+        public void InitSteamAudio(in AudioSource audioSource, in AudioClip audioClip)
+        {
+            //스팀오디오일시//클립에 적용할려면 Ambisonic;
+            audioSource.spatialize = true;
+            audioSource.TryGetComponent(out SteamAudio.SteamAudioSource steamAudioSource);
+            steamAudioSource.airAbsorption = true;//거리에 따른 공기흡후
+
+            //사운드의 지향성패턴처리//사운드의 방향철
+            steamAudioSource.directivity = true;
+            return;
+
+        }
+#endif
 
 #if MasterAudio
 
@@ -71,5 +116,7 @@ namespace lLCroweTool.Sound
             //MasterAudio.PlaySound3DAtVector3(attackBox.projectilePartData.reflectSoundArray[index], collision2D.contacts[0].point);
         }
 #endif
+
+
     }
 }

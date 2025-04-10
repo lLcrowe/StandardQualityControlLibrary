@@ -1235,7 +1235,7 @@ namespace lLCroweTool
         //아직 검증안됨//속도에 다른 회전처리
         public static void RotationObject(Rigidbody2D rb2d, float offset = 90f)
         {
-            float angle = Mathf.Atan2(rb2d.velocity.y, rb2d.velocity.x) * Mathf.Rad2Deg + offset;
+            float angle = Mathf.Atan2(rb2d.linearVelocity.y, rb2d.linearVelocity.x) * Mathf.Rad2Deg + offset;
             rb2d.SetRotation(angle);// = Quaternion.AngleAxis(angle, Vector3.forward);
         }
 
@@ -2295,7 +2295,7 @@ namespace lLCroweTool
             Vector2 gravityAccel = Physics2D.gravity * rb2d.gravityScale * timeStep * timeStep;
 
             //한프레임당 적용할 저항력을 구함
-            float drag = 1 - timeStep * rb2d.drag;
+            float drag = 1 - timeStep * rb2d.linearDamping;
 
             //시작스텝을 구하고 시뮬레이션
             Vector2 moveStep = velocity * timeStep;
