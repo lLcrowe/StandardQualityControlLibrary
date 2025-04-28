@@ -2537,25 +2537,60 @@ namespace lLCroweTool
             return index < collection.Count;
         }
 
+        //현재 아래함수는 불필요하게 작업이 많음. 나중에 체크후 분리하거나 제거하기
+
         /// <summary>
         /// 트리거함수(딸칵)
         /// </summary>
-        /// <param name="checkAction"></param>
-        /// <param name="startTriggerAction"></param>
-        /// <param name="endTriggerAction"></param>
-        /// <param name="updateTriggerAction"></param>
-        /// <param name="state"></param>
-        /// <param name="prevState"></param>
-        public static void Trigger(ref bool curState, in bool newState, in System.Action<bool> stateAction)
+        /// <param name="checkAction">상태체크액션</param>
+        /// <param name="stateTrueTriggerAction">트루상태트리거액션</param>
+        /// <param name="stateFalseTriggerAction">폴스상태트리거액션</param>
+        /// <param name="stateTrueUpdateAction">트루상태업데이트액션</param>
+        /// <param name="state">상태</param>
+        /// <param name="prevState">이전상태</param>
+        public static void ActionTrigger(in System.Func<bool> checkAction, in System.Action stateTrueTriggerAction, in System.Action stateFalseTriggerAction, in System.Action stateTrueUpdateAction, ref bool state, ref bool prevState)
         {
-            if (curState == newState)
+            state = checkAction();
+            if (state != prevState)
+            {
+                //다를시에만 작동
+                if (prevState)
+                {
+                    stateFalseTriggerAction?.Invoke();
+                    //Debug.Log("Exit");
+                }
+                else
+                {
+                    stateTrueTriggerAction?.Invoke();
+                    //Debug.Log("Enter");
+                }
+                prevState = state;
+            }
+
+            if (!state)
             {
                 return;
             }
 
-            curState = newState;
-            stateAction?.Invoke(curState);
-            Debug.Log("state");
+            //Debug.Log("Update");
+            stateTrueUpdateAction?.Invoke();
+        }
+
+        /// <summary>
+        /// 인풋상태값이 변했을시 특정액션을 작동되게 해주는 함수
+        /// </summary>
+        /// <param name="prevState">이전상태</param>
+        /// <param name="newState">신규상태</param>
+        /// <param name="stateAction">상태액션</param>        
+        public static void UpdateStateTrigger(ref bool prevState, in bool newState, in System.Action<bool> stateAction)
+        {
+            if (prevState == newState)
+            {
+                return;
+            }
+
+            prevState = newState;
+            stateAction?.Invoke(newState);
         }
 
         /// <summary>

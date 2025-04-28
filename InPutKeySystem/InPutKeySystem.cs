@@ -69,15 +69,15 @@ namespace lLCroweTool.InputKey
         public class KeyDataBible : CustomDictionary<string, KeyData> { }
 
         //기능이름과 키코드//필요시에 여기만 변경됨
-        public class KeyEventBible : CustomDictionary<string, KeyCode> { }
+        public class KeyCodeBible : CustomDictionary<string, KeyCode> { }
 
         [SerializeField] private KeyDataBible keyDataBible = new();
-        [SerializeField] private KeyEventBible keyEventBible = new();
+        [SerializeField] private KeyCodeBible keyCodeBible = new();
 
-        //[SerializeField] private List<KeyData> normalKeyDataList = new List<KeyData>(10);
-        //[SerializeField] private List<KeyData> secondaryKeyDataList = new List<KeyData>(10);
-        //internal List<KeyData> NormalKeyDataList {get => normalKeyDataList; }
-        //internal List<KeyData> SecondaryKeyDataList { get => secondaryKeyDataList; }
+        [SerializeField] private List<KeyData> normalKeyDataList = new List<KeyData>(10);
+        [SerializeField] private List<KeyData> secondaryKeyDataList = new List<KeyData>(10);
+        internal List<KeyData> NormalKeyDataList { get => normalKeyDataList; }
+        internal List<KeyData> SecondaryKeyDataList { get => secondaryKeyDataList; }
 
 #if CommandKey
         //커맨드처리
@@ -121,7 +121,7 @@ namespace lLCroweTool.InputKey
             foreach (var item in keyDataArray)
             {
                 keyDataBible.Add(item.keyName, item);
-                keyEventBible.Add(item.keyName, KeyCode.None);
+                keyCodeBible.Add(item.keyName, KeyCode.None);
             }
 
 #if CommandKey
@@ -142,7 +142,7 @@ namespace lLCroweTool.InputKey
 
             //키액션, 키이벤트 재등록
             keyData.action = action;
-            keyEventBible[name] = keyCode;
+            keyCodeBible[name] = keyCode;
         }
 
         public void SetKeyDataAction(string name, System.Action action)
@@ -192,12 +192,9 @@ namespace lLCroweTool.InputKey
                 var data = keyData.Value;
 
 
-                if (!keyEventBible.TryGetValue(key, out var keyCode))
-                {
-                    continue;
-                }
+           
                 
-                if (!InputKey(data, keyCode))
+                if (!InputKey(data))
                 {
                     continue;
                 }
@@ -217,10 +214,14 @@ namespace lLCroweTool.InputKey
 #endif
         }
 
-        private bool InputKey(in KeyData keyData, in KeyCode keyCode)
+        private bool InputKey(in KeyData keyData)
         {   
-            var inputKeyType = keyData.inputKeyType;
-            switch (inputKeyType)
+            if (!keyCodeBible.TryGetValue(keyData.keyName, out var keyCode))
+            {
+                return false;
+            }
+
+            switch (keyData.inputKeyType)
             {
                 case InputKeyType.KeyDown: return Input.GetKeyDown(keyCode);
                 case InputKeyType.KeyUp: return Input.GetKeyUp(keyCode);

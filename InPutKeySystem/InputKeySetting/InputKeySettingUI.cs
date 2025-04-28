@@ -42,21 +42,22 @@ namespace lLCroweTool.UI.MainMenu
         public void InitInputSettingUI()
         {
             var instance = InPutKeySystem.Instance;
-            //var normalKeyBible = instance.NormalKeyDataList;
-            //var secondaryKeyBible = instance.SecondaryKeyDataList;
+            var normalKeyBible = instance.NormalKeyDataList;
+            var secondaryKeyBible = instance.SecondaryKeyDataList;
 
             //foreach (var item in normalKeyBible)
             //{
             //    InputKeySettingButton temp = ObjectPoolManager.Instance.RequestDynamicComponentObject(inputKeySettingButtonPrefab);
             //    temp.transform.SetParent(buttonPosArray[0]);
-            //    temp.InitInputSettingUICard(item.keyName, item.keyCode, ()=> InputKeySettingButtonFunc(item, temp, normalKeyBible), selectColor);
-            //}
+            //    temp.InitInputSettingUICard(item.keyName, item.keyCode, () => InputKeySettingButtonFunc(item, temp, normalKeyBible), selectColor);
+            //}                                              
+
 
             //foreach (var item in secondaryKeyBible)
             //{
             //    InputKeySettingButton temp = ObjectPoolManager.Instance.RequestDynamicComponentObject(inputKeySettingButtonPrefab);
             //    temp.transform.SetParent(buttonPosArray[1]);
-            //    temp.InitInputSettingUICard(item.keyName, item.keyCode, ()=> InputKeySettingButtonFunc(item, temp, secondaryKeyBible), selectColor);
+            //    temp.InitInputSettingUICard(item.keyName, item.keyCode, () => InputKeySettingButtonFunc(item, temp, secondaryKeyBible), selectColor);
             //}
         }
 
@@ -125,7 +126,7 @@ namespace lLCroweTool.UI.MainMenu
                     }
                     else
                     {
-                        keyData.keyCode = targetKeyCode;
+                        //keyData.keyCode = targetKeyCode;
                         inputSettingButton.ChangeButtonText(targetKeyCode.ToString());
                         break;
                     }
@@ -146,7 +147,7 @@ namespace lLCroweTool.UI.MainMenu
             {
                 var keyData = keyDataList[i];
 
-                if (keyData.keyCode != keyCode)
+                //if (keyData.keyCode != keyCode)
                 {
                     continue;
                 }
