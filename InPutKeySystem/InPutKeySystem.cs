@@ -93,6 +93,7 @@ namespace lLCroweTool.InputKey
 
 #if CommandKey
         //커맨드처리
+        [Header("커맨드시스템")]
         public CommandSystem commandSystem = new CommandSystem();
 #endif
 

@@ -1,4 +1,6 @@
 ﻿
+using static lLCroweTool.InputKey.CommandSystem;
+
 namespace lLCroweTool.InputKey.Define
 {
     /// <summary>
@@ -11,18 +13,23 @@ namespace lLCroweTool.InputKey.Define
         //키 정의
         public static KeyData[] keyDataArray = new KeyData[]
         {
-                new KeyData() { keyName = "LeftKey", inputKeyType = InputKeyType.KeyPress, },
-                new KeyData() { keyName = "RightKey", inputKeyType = InputKeyType.KeyPress },
-                new KeyData() { keyName = "UpKey", inputKeyType = InputKeyType.KeyPress },
-                new KeyData() { keyName = "DownKey", inputKeyType = InputKeyType.KeyPress },
-                new KeyData() { keyName = "Fire", inputKeyType = InputKeyType.KeyPress },
+            new KeyData() { keyName = "LeftKey", inputKeyType = InputKeyType.KeyPress, },
+            new KeyData() { keyName = "RightKey", inputKeyType = InputKeyType.KeyPress },
+            new KeyData() { keyName = "UpKey", inputKeyType = InputKeyType.KeyPress },
+            new KeyData() { keyName = "DownKey", inputKeyType = InputKeyType.KeyPress },
+            new KeyData() { keyName = "Fire", inputKeyType = InputKeyType.KeyPress },
         };
 
 
-#if CommandKey
+        //#if CommandKey
         //커맨드 정의
+        public static CommandKeyData[] commandDataArray = new[]
+        {
+            new CommandKeyData(){commandName = "Skill1", keyArray = new[]{ "LeftKey", "LeftKey", "Fire"}},
+            new CommandKeyData(){commandName = "Skill2", keyArray = new[]{ "RightKey", "RightKey",""}},
+            new CommandKeyData(){commandName = "Skill3", keyArray = new[]{ "Fire", "Fire", ""}},
+        };
 
-
-#endif
+//#endif
     }
 }
