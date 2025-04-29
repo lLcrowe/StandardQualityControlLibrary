@@ -1,4 +1,5 @@
 ﻿
+using UnityEngine;
 using static lLCroweTool.InputKey.CommandSystem;
 
 namespace lLCroweTool.InputKey.Define
@@ -6,9 +7,14 @@ namespace lLCroweTool.InputKey.Define
     /// <summary>
     /// 여기서 프로젝트 게임에 쓸 인풋에 대한 걸 설정하여 집어넣음
     /// </summary>
-    public static class InputKeyDefine
+    
+    public class InputKeyDefine
     {
         //샘플코드
+        static InputKeyDefine()
+        {
+
+        }
 
         //키 정의
         public static KeyData[] keyDataArray = new KeyData[]
@@ -19,17 +25,13 @@ namespace lLCroweTool.InputKey.Define
             new KeyData() { keyName = "DownKey", inputKeyType = InputKeyType.KeyPress },
             new KeyData() { keyName = "Fire", inputKeyType = InputKeyType.KeyPress },
         };
-
-
         //#if CommandKey
-        //커맨드 정의
         public static CommandKeyData[] commandDataArray = new[]
         {
             new CommandKeyData(){commandName = "Skill1", keyArray = new[]{ "LeftKey", "LeftKey", "Fire"}},
             new CommandKeyData(){commandName = "Skill2", keyArray = new[]{ "RightKey", "RightKey",""}},
             new CommandKeyData(){commandName = "Skill3", keyArray = new[]{ "Fire", "Fire", ""}},
         };
-
 //#endif
     }
 }
