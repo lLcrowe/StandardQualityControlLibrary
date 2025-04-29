@@ -2,6 +2,7 @@
 using lLCroweTool.LogSystem;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 
 namespace lLCroweTool.UI.MainMenu
@@ -42,15 +43,15 @@ namespace lLCroweTool.UI.MainMenu
         public void InitInputSettingUI()
         {
             var instance = InPutKeySystem.Instance;
-            var normalKeyBible = instance.NormalKeyDataList;
-            var secondaryKeyBible = instance.SecondaryKeyDataList;
+            var normalKeyBible = instance.GetKeyDataBible();
 
-            //foreach (var item in normalKeyBible)
-            //{
-            //    InputKeySettingButton temp = ObjectPoolManager.Instance.RequestDynamicComponentObject(inputKeySettingButtonPrefab);
-            //    temp.transform.SetParent(buttonPosArray[0]);
-            //    temp.InitInputSettingUICard(item.keyName, item.keyCode, () => InputKeySettingButtonFunc(item, temp, normalKeyBible), selectColor);
-            //}                                              
+            foreach (var keyValuePair in normalKeyBible)
+            {
+                var item = keyValuePair.Value;
+                InputKeySettingButton temp = ObjectPoolManager.Instance.RequestDynamicComponentObject(inputKeySettingButtonPrefab);
+                temp.transform.SetParent(buttonPosArray[0]);
+                temp.InitInputSettingUICard(item.keyName, item.keyCode, () => InputKeySettingButtonFunc(item, temp), selectColor);
+            }
 
 
             //foreach (var item in secondaryKeyBible)
@@ -67,14 +68,14 @@ namespace lLCroweTool.UI.MainMenu
         /// <param name="keyData">세팅당할 키코드</param>
         /// <param name="inputSettingButton">인풋키세팅버튼</param>
         /// <param name="targetKeyBible">키 사전</param>        
-        private void InputKeySettingButtonFunc(KeyData keyData, InputKeySettingButton inputSettingButton, List<KeyData> keyDataList)
+        private void InputKeySettingButtonFunc(KeyData keyData, InputKeySettingButton inputSettingButton)
         {
             if (isSetting)
             {
                 return;
             }        
             isSetting = true;
-            StartCoroutine(UpdateKeySettingCoroutine(keyData, inputSettingButton, keyDataList));
+            StartCoroutine(UpdateKeySettingCoroutine(keyData, inputSettingButton));
         }
 
         //여기 바꿔야됨.//다른함수나 기능으로 대체하기
@@ -101,8 +102,10 @@ namespace lLCroweTool.UI.MainMenu
         //    }
         //}
 
-        private IEnumerator UpdateKeySettingCoroutine(KeyData keyData, InputKeySettingButton inputSettingButton,List<KeyData> keyDataList)
+        private IEnumerator UpdateKeySettingCoroutine(KeyData keyData, InputKeySettingButton inputSettingButton)
         {
+            var instance = InPutKeySystem.Instance;
+            var keyBible = instance.GetKeyDataBible();
             do
             {
                 //OnGUI에서 세팅이 되면 넘어감
@@ -117,7 +120,7 @@ namespace lLCroweTool.UI.MainMenu
                 if (!isSetting)
                 {   
                     //해당되는 키 사전에서 중복체크
-                    if (CheckOverlap(keyDataList, targetKeyCode))
+                    if (CheckOverlap(keyBible, targetKeyCode))
                     {
                         //중복됨
                         //나중에 컨펌창 띄워주기 구역                    
@@ -136,23 +139,17 @@ namespace lLCroweTool.UI.MainMenu
             inputSettingButton.ChangeButtonColor(Color.white);
 
         }
-
-#if UNITY_INPUT_SYSTEM_PACKAGE
-        private bool CheckOverlap(List<KeyData> keyDataList, UnityEngine.InputSystem.Key keyCode)
-#elif ENABLE_LEGACY_INPUT_MANAGER
-        private bool CheckOverlap(List<KeyData> keyDataList, KeyCode keyCode)
-#endif
+        private bool CheckOverlap(InPutKeySystem.KeyDataBible keyBible, KeyCode keyCode)
         {
-            for (int i = 0; i < keyDataList.Count; i++)
-            {
-                var keyData = keyDataList[i];
-
-                //if (keyData.keyCode != keyCode)
+            foreach (var keyData in keyBible.Values)
+            {   
+                if (keyData.keyCode != keyCode)
                 {
                     continue;
                 }
                 return true;
             }
+            
             return false;
         }
     }

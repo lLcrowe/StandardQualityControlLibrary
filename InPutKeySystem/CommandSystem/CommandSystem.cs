@@ -10,36 +10,36 @@ namespace lLCroweTool.InputKey
     //20250303
     //기본올드 키버전으로 처리
     //심볼로 처리
+
+    //20250429
+    //string으로 키이름같은걸 받아서 처리하는 방식으로 변경
+    //그래야지만 구지 키코드를 매번 직접 바꿀필요없이 변경가능
+    //성능을 좀 감소시키더라도 string으로 변경하여 귀찮음 방지
+
     public class CommandSystem
     {
         public TimerModule_Element timer;
-
-#if UNITY_INPUT_SYSTEM_PACKAGE
-        public List<UnityEngine.InputSystem.Key> keyCodeList = new();//입력키코드        
-        [System.Serializable] public class CommandBible : CustomDictionary<UnityEngine.InputSystem.Key[], System.Action> { };
+        public List<string> keyCodeList = new ();//입력키코드
+        [System.Serializable] public class CommandBible : CustomDictionary<string[], System.Action> { };
         public CommandBible commandBible = new();
 
         public class CommandKeyData
         {
-            public UnityEngine.InputSystem.Key[] keyArray = new UnityEngine.InputSystem.Key[0];
+            /// <summary>
+            /// 커맨드 이름
+            /// </summary>
+            public string commandName;
+
+            /// <summary>
+            /// 커맨드로 쓸 키순서들
+            /// </summary>
+            public string[] keyArray = new string[0];
+
+            /// <summary>
+            /// 커맨드가 작동될때 액션
+            /// </summary>
             public System.Action action;
         }
-#elif ENABLE_LEGACY_INPUT_MANAGER
-        public List<KeyCode> keyCodeList = new ();//입력키코드        
-        [System.Serializable] public class CommandBible : CustomDictionary<KeyCode[], System.Action> { };
-        public CommandBible commandBible = new();
-
-        public class CommandKeyData
-        {
-            public KeyCode[] keyArray = new KeyCode[0];
-            public System.Action action;
-        }
-#endif
-
-
-
-
-        //이걸 그냥 키코드로 처리하는것도 괜찮음.
 
         public void Init()
         {
@@ -59,16 +59,9 @@ namespace lLCroweTool.InputKey
             }
         }
 
-#if UNITY_INPUT_SYSTEM_PACKAGE
-        public void InputKey(UnityEngine.InputSystem.Key keyCode)
-#elif ENABLE_LEGACY_INPUT_MANAGER
-        public void InputKey(KeyCode keyCode)
-#endif
+        public void InputKey(in string keyName)
         {
-
-            
-
-            keyCodeList.Add(keyCode);
+            keyCodeList.Add(keyName);
             timer.ResetTime();
         }
 
