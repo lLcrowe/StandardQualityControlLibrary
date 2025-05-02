@@ -9,6 +9,7 @@ using UnityEngine;
 //20240507//심볼처리를 패뜨파인더처럼 온오프해서  제작하기
 //20240607//기존 lLcroweToolBox 통합
 //20240609//심볼제작기 제작끝
+//20250502//command 심볼추가
 
 namespace SymbolDefine
 {
@@ -55,6 +56,7 @@ namespace SymbolDefine
             "Achevement",//"업적",
             "Localize",//MEC&Localize//현지화
             "lLcroweDOTS",//DOTS용
+            "CommandKey",
         };
 
         //에셋 익스텐드구역

@@ -1,6 +1,5 @@
-﻿//#if CommandKey
+﻿#if CommandKey
 using lLCroweTool.Dictionary;
-using lLCroweTool.InputKey.Define;
 using lLCroweTool.TimerSystem;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +19,30 @@ namespace lLCroweTool.InputKey
     //리터널 + 리터널은 리터널(상수폴)로 됨
     //intern 폴에 집어넣어서 처리
 
+
+    /// <summary>
+    /// 커맨드 키 데이터
+    /// </summary>
+    [System.Serializable]
+    public class CommandKeyData
+    {
+        /// <summary>
+        /// 커맨드 이름
+        /// </summary>
+        public string commandName;
+
+        /// <summary>
+        /// 커맨드로 쓸 키순서들
+        /// </summary>
+        public string[] keyArray = new string[0];
+
+        /// <summary>
+        /// 커맨드가 작동될때 액션
+        /// </summary>
+        public System.Action action;
+    }
+
+
     /// <summary>
     /// 커맨드 시스템. 인풋킷시스템에서 작동시켜준다
     /// </summary>
@@ -33,28 +56,10 @@ namespace lLCroweTool.InputKey
         public CommandBible commandBible = new();
 
         /// <summary>
-        /// 커맨드 키 데이터
+        /// 커맨드시스템 초기화
         /// </summary>
-        [System.Serializable]
-        public class CommandKeyData
-        {
-            /// <summary>
-            /// 커맨드 이름
-            /// </summary>
-            public string commandName;
-
-            /// <summary>
-            /// 커맨드로 쓸 키순서들
-            /// </summary>
-            public string[] keyArray = new string[0];
-
-            /// <summary>
-            /// 커맨드가 작동될때 액션
-            /// </summary>
-            public System.Action action;
-        }
-
-        public void Init()
+        /// <param name="commandDataArray">커맨드 키 배열들</param>
+        public void Init(in CommandKeyData[] commandDataArray)
         {
             checkTimer.SetTimer(0.3f);
             var temp = typeof(CommandSystem);
@@ -62,8 +67,6 @@ namespace lLCroweTool.InputKey
 
 
             //커맨드 등록
-            var commandDataArray = InputKeyDefine.commandDataArray;
-
             commandBible.Clear();
             for (int i = 0; i < commandDataArray.Length; i++)
             {
@@ -231,4 +234,4 @@ namespace lLCroweTool.InputKey
         }
     }
 }
-//#endif
+#endif

@@ -21,7 +21,15 @@ namespace lLCroweTool.Singleton
             {
                 if (ReferenceEquals(instance, null))
                 {
+#if UNITY_6000_0_OR_NEWER
+                    //instance = FindObjectOfType<T>();
+                    instance = FindFirstObjectByType<T>(FindObjectsInactive.Include);
+#else
                     instance = FindObjectOfType<T>();
+#endif
+
+
+
                     if (ReferenceEquals(instance, null))
                     {
                         //내가 가진 형태에서는 이형태로 할시 문제가 발생함

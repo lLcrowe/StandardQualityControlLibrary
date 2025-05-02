@@ -1,9 +1,5 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
-
-
 
 public class AssetGridSetter : MonoBehaviour
 {
@@ -73,23 +69,3 @@ public class AssetGridSetter : MonoBehaviour
         }
     }
 }
-[CustomEditor(typeof(AssetGridSetter))]
-public class AssetGridSetterInspectorEditor : Editor
-{
-    private AssetGridSetter targetAssetGridSetter;
-    private void OnEnable()
-    {
-        targetAssetGridSetter = target as AssetGridSetter;
-    }
-
-    public override void OnInspectorGUI()
-    {
-        base.OnInspectorGUI();
-
-        if (GUILayout.Button("Á¤·Ä"))
-        {
-            targetAssetGridSetter.BatchObject();
-        }
-    }
-}
-#endif

@@ -1,37 +1,68 @@
-﻿
+﻿using lLCroweTool.InputKey;
 using UnityEngine;
-using static lLCroweTool.InputKey.CommandSystem;
 
-namespace lLCroweTool.InputKey.Define
+[DefaultExecutionOrder(-900)]
+/// <summary>
+/// 프로젝트 게임에 쓸 인풋키에 대한 걸 설정하여 집어넣음
+/// </summary>
+public abstract class InputKeyDefine : MonoBehaviour
 {
-    /// <summary>
-    /// 여기서 프로젝트 게임에 쓸 인풋에 대한 걸 설정하여 집어넣음
-    /// </summary>
-    
-    public class InputKeyDefine
+    private void Awake()
     {
-        //샘플코드
-        static InputKeyDefine()
-        {
-
-        }
-
-        //키 정의
-        public static KeyData[] keyDataArray = new KeyData[]
-        {
-            new KeyData() { keyName = "LeftKey", inputKeyType = InputKeyType.KeyPress, },
-            new KeyData() { keyName = "RightKey", inputKeyType = InputKeyType.KeyPress },
-            new KeyData() { keyName = "UpKey", inputKeyType = InputKeyType.KeyPress },
-            new KeyData() { keyName = "DownKey", inputKeyType = InputKeyType.KeyPress },
-            new KeyData() { keyName = "Fire", inputKeyType = InputKeyType.KeyPress },
-        };
-        //#if CommandKey
-        public static CommandKeyData[] commandDataArray = new[]
-        {
-            new CommandKeyData(){commandName = "Skill1", keyArray = new[]{ "LeftKey", "LeftKey", "Fire"}},
-            new CommandKeyData(){commandName = "Skill2", keyArray = new[]{ "RightKey", "RightKey",""}},
-            new CommandKeyData(){commandName = "Skill3", keyArray = new[]{ "Fire", "Fire", ""}},
-        };
-//#endif
+        Init();
     }
+
+    /// <summary>
+    /// 초기화
+    /// </summary>
+    protected virtual void Init()
+    {
+        //키 등록
+        InPutKeySystem.Instance.InitInputSetting(GetKeyDataArray());
+
+#if CommandKey
+        //커맨드키 등록
+        InPutKeySystem.Instance.InitInputCommandSetting(GetCommandKeyData());
+#endif
+    }
+
+
+    /// <summary>
+    /// 키데이터를 가져오는 함수
+    /// </summary>
+    /// <returns></returns>
+    public abstract KeyData[] GetKeyDataArray();
+
+#if CommandKey
+        /// <summary>
+        /// 커맨드 키데이터를 가져오는 함수
+        /// </summary>
+        /// <returns></returns>
+        public abstract CommandKeyData[] GetCommandKeyData();
+
+#endif
+
+    #region 샘플코드        
+    //public override CommandKeyData[] GetCommandKeyData()
+    //{
+    //    return new[]
+    //    {
+    //        new CommandKeyData(){commandName = "Skill1", keyArray = new[]{ "LeftKey", "LeftKey", "Fire"}},
+    //        new CommandKeyData(){commandName = "Skill2", keyArray = new[]{ "RightKey", "RightKey",""}},
+    //        new CommandKeyData(){commandName = "Skill3", keyArray = new[]{ "Fire", "Fire", ""}},
+    //    };
+    //}
+
+    //public override KeyData[] GetKeyDataArray()
+    //{
+    //    return new KeyData[]
+    //    {
+    //        new KeyData() { keyName = "LeftKey", inputKeyType = InputKeyType.KeyPress, },
+    //        new KeyData() { keyName = "RightKey", inputKeyType = InputKeyType.KeyPress },
+    //        new KeyData() { keyName = "UpKey", inputKeyType = InputKeyType.KeyPress },
+    //        new KeyData() { keyName = "DownKey", inputKeyType = InputKeyType.KeyPress },
+    //        new KeyData() { keyName = "Fire", inputKeyType = InputKeyType.KeyPress },
+    //    };
+    //}
+    #endregion
 }

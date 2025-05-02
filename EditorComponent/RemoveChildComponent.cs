@@ -12,7 +12,6 @@ namespace lLCroweTool.QC.EditorOnly
 
         public Component targetComponent;
 
-        [ButtonMethod]
         public void RemoveTargetComponentForAllChild()
         {
             if (targetComponent == null)
@@ -38,14 +37,12 @@ namespace lLCroweTool.QC.EditorOnly
             }
         }
 
-        [ButtonMethod]
+        
         public void DeleteThisComponent()
         {
             DestroyImmediate(this);
         }
-
     }
-
 }
 
 

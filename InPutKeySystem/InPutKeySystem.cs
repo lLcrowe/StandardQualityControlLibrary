@@ -2,20 +2,21 @@
 using UnityEngine;
 using lLCroweTool.Singleton;
 using lLCroweTool.Dictionary;
-using lLCroweTool.InputKey.Define;
-
+using UILibrary;
 
 //테스트
 #if ENABLE_LEGACY_INPUT_MANAGER
 #elif UNITY_INPUT_SYSTEM_PACKAGE
 #endif
 
-
 //구조를 분리
 //기존 시스템
 
 namespace lLCroweTool.InputKey
 {
+    /// <summary>
+    /// 키데이터
+    /// </summary>
     public class KeyData
     {
         //20250303
@@ -106,20 +107,17 @@ namespace lLCroweTool.InputKey
             gameObject.name = "InPutKey";
             camera = Camera.main;
 
-            //인풋 세팅 초기화
-            InitInputSetting();
-            UpdateMouseData();
-
-#if CommandKey
-            //커맨드키 등록
-            commandSystem.Init();
-#endif
+            //마우스값 초기화
+            //UpdateMouseData();
         }
 
-        private void InitInputSetting()
+        /// <summary>
+        /// 키세팅 초기화
+        /// </summary>
+        /// <param name="keyDataArray">키데이터</param>
+        public void InitInputSetting(params KeyData[] keyDataArray)
         {
-            //등록
-            var keyDataArray = InputKeyDefine.keyDataArray;
+            //키등록
             defineKeyNameList = new List<string>(keyDataArray.Length);
             foreach (var item in keyDataArray)
             {
@@ -127,6 +125,18 @@ namespace lLCroweTool.InputKey
                 defineKeyNameList.Add(item.keyName);
             }
         }
+
+#if CommandKey
+        /// <summary>
+        /// 커맨드키세팅 초기화
+        /// </summary>
+        /// <param name="CommandKeyDataArray">커맨드키 데이터</param>
+        public void InitInputCommandSetting(params CommandKeyData[] CommandKeyDataArray)
+        {
+            //커맨드키 등록
+            commandSystem.Init(CommandKeyDataArray);
+        }
+#endif
 
         //함수들 추가
         //키코드
@@ -217,15 +227,16 @@ namespace lLCroweTool.InputKey
             //    }
             //}
 
-
-
             //키처리구간//통합됨.//두개의 키이상은 커맨드에서 작동
             foreach (var keyData in keyDataBible)
             {
                 var key = keyData.Key;
                 var data = keyData.Value;
-                
-                if (!InputKey(data))
+                var keyCode = data.keyCode;
+                var inputKeyType = data.inputKeyType;
+
+                //인풋키 체크
+                if (!keyCode.InputKey(inputKeyType))
                 {
                     continue;
                 }
@@ -244,19 +255,6 @@ namespace lLCroweTool.InputKey
             commandSystem.Update();
 #endif
         }
-
-        private bool InputKey(in KeyData keyData)
-        {   
-            var keyCode = keyData.keyName;
-            switch (keyData.inputKeyType)
-            {
-                case InputKeyType.KeyDown: return Input.GetKeyDown(keyCode);
-                case InputKeyType.KeyUp: return Input.GetKeyUp(keyCode);
-                case InputKeyType.KeyPress: return Input.GetKey(keyCode);
-            }
-            return false;
-        }
-
 
         public KeyDataBible GetKeyDataBible()
         {
