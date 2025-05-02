@@ -1,5 +1,4 @@
 ﻿using lLCroweTool.Singleton;
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -54,19 +53,16 @@ namespace lLCroweTool.Sound
             {
                 do
                 {
+                    if (activeSoundObjectQueue.Count > 0)
+                    {
+                        break;
+                    }
                     var sound =  activeSoundObjectQueue.Dequeue();
                     if (!sound.isActiveAndEnabled)
                     {
                         continue;
                     }
-
                     sound.SetActive(false);
-
-                    if (activeSoundObjectQueue.Count > 8)
-                    {
-                        continue;
-                    }
-                    break;
 
                 } while (true);
             }

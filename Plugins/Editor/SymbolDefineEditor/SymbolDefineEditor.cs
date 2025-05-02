@@ -49,14 +49,14 @@ namespace SymbolDefine
 
             //외부 에셋//이름로 심볼정의
             
-            "AbilitySystem",
+            //"AbilitySystem",//이제 사용안하는거 같음
             //"Doozy",//많은게 있을것..
 
             //"Animancer",ResearchTreeStore
             "Achevement",//"업적",
             "Localize",//MEC&Localize//현지화
             "lLcroweDOTS",//DOTS용
-            "CommandKey",
+            "CommandKey",//키시스템에서 커맨드기능을 활성화시
         };
 
         //에셋 익스텐드구역
