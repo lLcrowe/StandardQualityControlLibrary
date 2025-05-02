@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using lLCroweTool.Singleton;
 using lLCroweTool.PoolBible;
+using System.Collections.Generic;
 
 namespace lLCroweTool
 {
@@ -31,14 +32,26 @@ namespace lLCroweTool
             return dynamicPoolBible.RequestPrefab(target) as T;
         }
 
-        public T RequestDynamicComponentObject<T>(T target, Vector3 pos, Quaternion rot, Transform parent = null) where T : Component
+        /// <summary>
+        /// 초기 특정오브젝트를 미리세팅해주는 함수
+        /// </summary>
+        /// <typeparam name="T">컴포넌트타입 상속</typeparam>
+        /// <param name="target">세팅해줄 프리팹</param>
+        /// <param name="amount">초기화수량</param>
+        public void InitRequestDynamicComponentObject<T>(T target, int amount) where T : Component
         {
-            var prefab = dynamicPoolBible.RequestPrefab(target) as T;
-            prefab.InitTrObjPrefab(pos, rot, parent);
-            return prefab;
+            List<T> tempList = new(amount);
+            for (int i = 0; i < amount; i++)
+            {
+                var instance = dynamicPoolBible.RequestPrefab(target) as T;
+                tempList.Add(instance);
+            }
+
+            for (int i = 0; i < tempList.Count; i++)
+            {
+                tempList[i].SetActive(false);
+            }
         }
-
-
 
         /// <summary>
         /// 오브젝트를 반환하는 함수
