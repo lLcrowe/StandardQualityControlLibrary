@@ -58,9 +58,10 @@ namespace lLCroweTool
         /// </summary>
         /// <typeparam name="T">컴포넌트 타입</typeparam>
         /// <param name="target">프리팹오브젝트</param>
-        public void ReturnDynamicComponentObject<T>(T target) where T : Component
+        //public void ReturnDynamicComponentObject<T>(T target) where T : Component
+        public void ReturnDynamicComponentObject<T>(T target, int instanceID) where T : Component
         {
-            dynamicPoolBible.ReturnPrefab(target);
+            dynamicPoolBible.ReturnPrefab(target, instanceID);
         }
     }
 }

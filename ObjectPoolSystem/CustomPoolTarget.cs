@@ -9,10 +9,13 @@ namespace lLCroweTool.ObjectPool
     {
         [SerializeField] private Component targetComponent;
         [SerializeField] private bool isReturn = true;
+        private int originInstanceID = -1;
 
-        public void SetPoolTargetComponent(Component component)
+        //public void SetPoolTargetComponent(Component component)
+        public void SetPoolTargetComponent(Component component, int instanceID)
         {
             targetComponent = component;
+            originInstanceID = instanceID;
         }
 
         /// <summary>
@@ -31,7 +34,7 @@ namespace lLCroweTool.ObjectPool
             {
                 return;
             }
-            ObjectPoolManager.Instance.ReturnDynamicComponentObject(targetComponent);
+            ObjectPoolManager.Instance.ReturnDynamicComponentObject(targetComponent, originInstanceID);
         }
     }
 }

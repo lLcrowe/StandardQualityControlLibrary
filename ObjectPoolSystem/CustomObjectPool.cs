@@ -48,16 +48,16 @@ namespace lLCroweTool.ObjectPool
         /// 프리팹을 요청하는 함수
         /// </summary>
         /// <returns>프리팹</returns>
-        public T RequestPrefab()
+        public T RequestPrefab(int instanceID)
         {
-            return RequestPrefab(this);
+            return RequestPrefab(this, instanceID);
         }
 
         /// <summary>
         /// 프리팹을 요청하는 함수
         /// </summary>
         /// <returns>프리팹</returns>
-        private static T RequestPrefab(CustomObjectPool<T> customObjectPool)
+        private static T RequestPrefab(CustomObjectPool<T> customObjectPool, int instanceID)
         {
             //초기화
             //bool isFind = false;
@@ -88,7 +88,7 @@ namespace lLCroweTool.ObjectPool
                 //찾은게 없다면 오브젝트 하나를 만들어준다.
                 targetObject = Object.Instantiate(customObjectPool.objectPrefab);
                 targetObject.name = customObjectPool.objectPrefab.name;//아이디지정
-                targetObject.GetAddComponent<CustomPoolTarget>().SetPoolTargetComponent(targetObject);//컴포넌트지정
+                targetObject.GetAddComponent<CustomPoolTarget>().SetPoolTargetComponent(targetObject, instanceID);//컴포넌트지정
             }
             targetObject.SetActive(true);//무조건 키는걸로 변경
             return targetObject;
