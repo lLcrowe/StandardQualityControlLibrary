@@ -1,8 +1,6 @@
 ﻿using lLCroweTool.InputKey;
 using lLCroweTool.LogSystem;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.Entities.UniversalDelegates;
 using UnityEngine;
 
 namespace lLCroweTool.UI.MainMenu
