@@ -1,0 +1,17 @@
+{
+    "name": "lLcroweSoundSystem",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0879d4e705e8fa540971fad5777825b5",
+        "GUID:194fe85f4405a664693409e93805fc9b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

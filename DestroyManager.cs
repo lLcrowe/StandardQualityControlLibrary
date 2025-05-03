@@ -15,7 +15,7 @@ namespace lLCroweTool.DestroyManger
         //파괴시킬오브젝트를 현 매니저에 집어넣어 
         //일정시간마다 일정한 오브젝트들을 삭제하게 만듬
         
-        public List<GameObject> destoryGameObjectList = new List<GameObject>();//파괴할 오브젝트 리스트
+        public List<GameObject> destoryGameObjectList = new List<GameObject>(20);//파괴할 오브젝트 리스트
 
         /// <summary> 삭제할 오브젝트 수 (기본값 5개) </summary>
         public int destroyCount = 2;

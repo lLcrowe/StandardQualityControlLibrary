@@ -1,0 +1,16 @@
+{
+    "name": "lLcrowePhysics",
+    "rootNamespace": "",
+    "references": [
+        "GUID:194fe85f4405a664693409e93805fc9b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,23 @@
+{
+    "name": "lLcroweUI",
+    "rootNamespace": "",
+    "references": [
+        "GUID:348bbc7f5907d0a4fa95deb024f9bec5",
+        "GUID:194fe85f4405a664693409e93805fc9b",
+        "GUID:0879d4e705e8fa540971fad5777825b5",
+        "GUID:c323dc857c176fe4599f38c2c1614411",
+        "GUID:22c0e3cb4d7ed7c4a8e757b02fea8920",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f",
+        "GUID:bccaef4d0feb9654da19ad84e596244c",
+        "GUID:ad5709ca90dc26a479d7bdf03e1b8eaf"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

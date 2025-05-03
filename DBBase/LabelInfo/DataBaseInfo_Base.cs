@@ -1,5 +1,4 @@
-﻿using lLCroweTool.Achievement;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace lLCroweTool.DataBase
@@ -9,6 +8,9 @@ namespace lLCroweTool.DataBase
     {
         //A0/Resources 폴더안에 배치할것
         //CSV텍스트파일//변경될수 있으니 그대로 둠
+
+        //20250504
+        //string처리가 기본으로
         
         public TextAsset itemInfoTextSheet;
 
@@ -24,11 +26,7 @@ namespace lLCroweTool.DataBase
         public TextAsset uiThemaTextSheet;
 
 
-        //데이터베이스//리스토로 가지고 동작되면 다른 매니저에서 딕셔너리로 가짐//인포와 연동        
-        public List<RecordActionInfo> recordActionInfoList = new List<RecordActionInfo>();
-        public List<AchievementInfo> achievementInfoList = new List<AchievementInfo>();
-        public List<AchievementConditionInfo> achievementConditionInfoList = new List<AchievementConditionInfo>();        
-        public List<RewardInfo> achievementRewardInfoList = new List<RewardInfo>();
+        
     }
 }
 
