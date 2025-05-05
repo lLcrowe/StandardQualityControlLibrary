@@ -451,42 +451,10 @@ namespace lLCroweTool.QC.EditorOnly
     
 
 
-        /// <summary>
-        /// 모든리소시스에서 특정타입에 대한 파일들을 찾아오는 함수
-        /// </summary>
-        /// <typeparam name="T">UnityEngine.Object를 상속받은 타입</typeparam>
-        /// <returns></returns>
-        public static ResourcesBible GetResourcesForAllSearch<T>() where T : Object
-        {
-            //AssetDataBase 폴더에 있는 것들중에 원하는거 가져오기
-
-            //먼저 리소시스폴더들을 찾아서 경로들을 가져오고 해당경로들에서 내부경로를 다 찾아오기//재귀처리하기
-            List<string> resourcesPathList = new List<string>();
-            FindPathForResourcesDirectory("Assets", ref resourcesPathList);            
-
-            //이제 각각 경로에서 파일 가져오기
-            //여기도 재귀해서 폴더내부찾기
-            //파일찾는거 체크//딕셔너리로 체크하는것도?//그냥 다가져와서 미리 체크해버리자구.
-            ResourcesBible targetObjectList = new();
-            foreach (var path in resourcesPathList)
-            {
-                //해당 리소시스경로에서 모든 폴더를 찾은후 원하는 파일들을 찾아옴
-                //내부에서 찾는것도?
-                FindResourcesInAllDirectoryFiles<T>(path, ref targetObjectList);
-
-                //lLcroweUtil.LogIList(tempData);
-                //재귀적으로 찾는거 보기
-            }
-
-            //이름찾기
-            //Debug.Log($"찾은 모든 수량{targetObjectList.Count}");
-            //lLcroweUtil.LogIList(resourcesPathList);
-
-            return targetObjectList;
-        }
+      
 
         //재귀적으로 Asset파일의 모든 디렉토리에서 Resources폴더를 찾아서 경로를 받아오는 함수        
-        private static void FindPathForResourcesDirectory(string path, ref List<string> resourcesPathList)
+        public static void FindPathForResourcesDirectory(string path, ref List<string> resourcesPathList)
         {
             var directories = GetFolders(path);
             foreach (var item in directories)
@@ -503,40 +471,7 @@ namespace lLCroweTool.QC.EditorOnly
             }
         }
 
-        /// <summary>
-        /// Resources폴더 내부의 모든 폴더에서 특정 오브젝트를 찾아서 등록하는 함수
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="path"></param>
-        /// <param name="targetBible"></param>
-        private static void FindResourcesInAllDirectoryFiles<T>(string path, ref ResourcesBible targetBible) where T : Object
-        {
-            //폴더를 먼저찾아서 최하단까지 들어간후
-            var directories = GetFolders(path);
-            foreach (var item in directories)
-            {
-                FindResourcesInAllDirectoryFiles<T>($"{path}/{item.Name}", ref targetBible);
-            }
-
-            //거기서부터 파일들 찾아옴//폴더가 더없으면 //파일들 찾아와서 가져오기
-            var tempData = GetUnityObjectFiles<T>(path, null);
-            foreach (var item in tempData)
-            {
-                if (item == null)
-                {
-                    continue;
-                }
-
-                //텍스쳐쪽이면처리
-                Sprite sprite = item as Sprite;
-                if (sprite != null)
-                {
-                    T temp = sprite as T;
-                    targetBible.TryAdd(item.name, temp);
-                }
-                targetBible.TryAdd(item.name, item);
-            }
-        }
+        
 
         /// <summary>
         /// Resources의 모든폴더경로를 가져오는 함수
@@ -738,69 +673,10 @@ namespace lLCroweTool.QC.EditorOnly
             }
         }
 
-        
 
 
-        //20230417//신규 포트폴리오 데이터보여주기관련
-        //새롭게 제작된 라벨종류로 적용
 
-        /// <summary>
-        /// 라벨베이스 데이터를 에디터에 보여주는 함수
-        /// </summary>
-        /// <param name="content">컨텐츠</param>
-        /// <param name="labelBase">라벨베이스 데이터</param>
-        public static void LabelBaseDataShow(string content, LabelBase labelBase)
-        {
-            labelBase.labelID = EditorGUILayout.TextField(content + " ID", labelBase.labelID);
-        }
-
-        /// <summary>
-        /// 아이콘라벨베이스 데이터를 에디터에 보여주는 함수
-        /// </summary>
-        /// <param name="content">컨텐츠</param>
-        /// <param name="iconLabelBase">아이콘라벨베이스 데이터</param>
-        public static void IconLabelBaseDataShow(string content, IconLabelBase iconLabelBase)
-        {
-            LabelBaseDataShow(content, iconLabelBase);
-            iconLabelBase.labelNameOrTitle = EditorGUILayout.TextField(content + " 이름", iconLabelBase.labelNameOrTitle);
-            iconLabelBase.name = iconLabelBase.labelNameOrTitle;//<==에디터에서 감지할수 있게 해주는것
-            EditorGUILayout.LabelField(content + " 아이콘");
-            //씬상의 객체를 허용하지 않음
-            iconLabelBase.icon = (Sprite)EditorGUILayout.ObjectField(iconLabelBase.icon, typeof(Sprite), true);            
-            EditorGUILayout.LabelField(content + " 상세설명");
-            iconLabelBase.description = EditorGUILayout.TextArea(iconLabelBase.description, GUILayout.Height(100));
-        }
-
-        //public static void UnitStatusDataDataShow(string content, UnitStatusData unitStatusData)
-        //{
-        //    unitStatusData.teamType = (UnitTeamType)EditorGUILayout.EnumPopup("공격타입", unitStatusData.teamType);
-
-        //    unitStatusData.maxHealth = EditorGUILayout.IntField(content + "최대체력", unitStatusData.maxHealth);
-        //    unitStatusData.curHealth = EditorGUILayout.IntField(content + "현재체력", unitStatusData.curHealth);
-        //    unitStatusData.damage = EditorGUILayout.IntField(content + "대미지", unitStatusData.damage);
-        //    unitStatusData.skillDamage = EditorGUILayout.IntField(content + "스킬대미지", unitStatusData.skillDamage);
-        //    unitStatusData.attackCoolTime = EditorGUILayout.FloatField(content + "공격속도", unitStatusData.attackCoolTime);            
-        //    unitStatusData.attackDistance = EditorGUILayout.FloatField(content + "공격거리", unitStatusData.attackDistance);
-        //    unitStatusData.projectilePrefab = (DamageModule)EditorGUILayout.ObjectField(content + "투사체", unitStatusData.projectilePrefab, typeof(DamageModule), false);
-        //    unitStatusData.damageType = (DamageType)EditorGUILayout.EnumPopup("공격타입", unitStatusData.damageType);
-        //    unitStatusData.projectileSpeed = EditorGUILayout.FloatField(content + "투사체속도", unitStatusData.projectileSpeed);
-        //    unitStatusData.damageRange =EditorGUILayout.FloatField(content + "공격범위", unitStatusData.damageRange);
-
-        //    unitStatusData.moveSpeed = EditorGUILayout.FloatField(content + "이동속도", unitStatusData.moveSpeed);
-        //    unitStatusData.damageArmor = EditorGUILayout.IntField(content + "공격방어력", unitStatusData.damageArmor);
-        //    unitStatusData.skillArmor = EditorGUILayout.IntField(content + "스킬공격방어력", unitStatusData.skillArmor);
-        //    unitStatusData.criticalChance = EditorGUILayout.IntField(content + "크리티컬찬스", unitStatusData.criticalChance);
-        //    unitStatusData.criticalScaling = EditorGUILayout.FloatField(content + "크리티컬배수", unitStatusData.criticalScaling);
-        //    unitStatusData.damageArmorPenetration = EditorGUILayout.IntField(content + "방어 관통력", unitStatusData.damageArmorPenetration);
-        //    unitStatusData.skillArmorPenetration = EditorGUILayout.IntField(content + "스킬방어 관통력", unitStatusData.skillArmorPenetration);
-        //    unitStatusData.dodgeChanceRatio = EditorGUILayout.IntField(content + "회피찬스", unitStatusData.dodgeChanceRatio);
-        //    unitStatusData.combatEndHill = EditorGUILayout.IntField(content + "전투끝 후 체력회복", unitStatusData.combatEndHill);
-        //    unitStatusData.skillChargeSpeed = EditorGUILayout.FloatField(content + "스킬차지 시간", unitStatusData.skillChargeSpeed);
-        //    unitStatusData.effectResistance = EditorGUILayout.IntField(content + "효과저항", unitStatusData.effectResistance);
-        //    unitStatusData.increaseTakenDamageRatio = EditorGUILayout.IntField(content + "받는 피해량 상승", unitStatusData.increaseTakenDamageRatio);
-        //    unitStatusData.decreaseTakenDamageRatio = EditorGUILayout.IntField(content + "피해차감", unitStatusData.decreaseTakenDamageRatio);
-        //    unitStatusData.increaseHillPowerRatio = EditorGUILayout.IntField(content + "힐 파워 상승", unitStatusData.increaseHillPowerRatio);
-        //}
+       
 
         /// <summary>
         /// 트랜스폼데이터를 보여주는 함수

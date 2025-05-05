@@ -2,7 +2,6 @@
 using UnityEngine;
 using lLCroweTool.Singleton;
 using lLCroweTool.Dictionary;
-using UILibrary;
 
 //테스트
 #if ENABLE_LEGACY_INPUT_MANAGER

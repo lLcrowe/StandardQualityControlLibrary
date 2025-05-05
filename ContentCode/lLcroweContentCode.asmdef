@@ -1,5 +1,5 @@
 {
-    "name": "lLcroweUI",
+    "name": "lLcroweContentCode",
     "rootNamespace": "",
     "references": [
         "GUID:348bbc7f5907d0a4fa95deb024f9bec5",
@@ -9,7 +9,9 @@
         "GUID:22c0e3cb4d7ed7c4a8e757b02fea8920",
         "GUID:6055be8ebefd69e48b49212b09b47b2f",
         "GUID:bccaef4d0feb9654da19ad84e596244c",
-        "GUID:ad5709ca90dc26a479d7bdf03e1b8eaf"
+        "GUID:ad5709ca90dc26a479d7bdf03e1b8eaf",
+        "GUID:856247919c5ca234eb91e5aba13fe10c",
+        "GUID:08434638eac213543a331010c3208f46"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
