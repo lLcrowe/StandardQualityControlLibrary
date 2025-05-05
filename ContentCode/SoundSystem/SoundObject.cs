@@ -8,6 +8,7 @@ namespace lLCroweTool.Sound
     {
         //오디오 작동시키는 오브젝트
         public AudioSource audioSource;
+        public Transform followObject;
 
         public void Awake()
         {
@@ -27,11 +28,17 @@ namespace lLCroweTool.Sound
         {
             float time = Time.time;
             float length = audioSource.clip.length;
+            var tr = transform;
             do
-            {
+            {   
+                if (followObject != null)
+                {
+                    tr.position = followObject.position;
+                }
                 yield return null;                
             } while (Time.time < length + time);
-            
+
+            followObject = null;
             gameObject.SetActive(false);
         }
        

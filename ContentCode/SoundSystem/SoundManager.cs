@@ -1,4 +1,5 @@
-﻿using lLCroweTool.Singleton;
+﻿using lLCroweTool.Dictionary;
+using lLCroweTool.Singleton;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +14,11 @@ namespace lLCroweTool.Sound
 
         public Queue<SoundObject> activeSoundObjectQueue = new Queue<SoundObject>(24);
 
+    
+        public class TagToSoundDataBible : CustomDictionary<string, List<AudioClip>> { }
+
+        public TagToSoundDataBible tagToSoundDataBible = new();
+
         protected override void Init()
         {
             audioListener = FindFirstObjectByType<AudioListener>(FindObjectsInactive.Include);
@@ -26,28 +32,69 @@ namespace lLCroweTool.Sound
             }
         }
 
+
+        public void RegisterTagToSoundData(in string tag, in AudioClip audioClip)
+        {
+            if (audioClip == null)
+            {
+                return;
+            }
+
+            if (string.IsNullOrEmpty(tag))
+            {
+                return;
+            }
+
+            //등록
+            if (!tagToSoundDataBible.TryGetValue(tag, out var clipList))
+            {
+
+                List<AudioClip> audioClipList = new();
+
+                tagToSoundDataBible.Add(tag, audioClipList);
+
+                clipList = audioClipList;
+            }
+
+            clipList.Add(audioClip);
+        }
+
+        public void PlayTagToSound(in string tag, Vector3 pos, in Transform attackTr)
+        {
+            if (!tagToSoundDataBible.TryGetValue(tag, out var clipList))
+            {
+                return;
+            }
+
+            //랜덤클립가져와서 재생//테스트하기
+            var clip = clipList[Random.Range(0, clipList.Count)];            
+            PlaySound3DAtVector3(clip, pos, attackTr);
+        }
+
+
         //리쿼스트를 여기서하고
         //에셋연동도 여기서하도록 한번래핑
-        public void PlaySound3DAtTransform(AudioClip audioClip, Transform transform)
-        {
-            PlaySound3DAtVector3(audioClip, transform.position);
+        public void PlaySound3DAtTransform(AudioClip audioClip, Transform attackTr)
+        {   
+            PlaySound3DAtVector3(audioClip, attackTr.position, attackTr);
 
 
-            //if (lLcroweUtil.CheckDistance(audioListenerTr.position, transform.position))
+            //if (lLcroweUtil.CheckDistance(audioListenerTr.position, attackTransform.position))
             //{
 
             //}
-            //MasterAudio.PlaySound3DAtTransform(_weaponModule.GetActionEquipmentPartData().jamSound, _weaponModule.transform);
+            //MasterAudio.PlaySound3DAtTransform(_weaponModule.GetActionEquipmentPartData().jamSound, _weaponModule.attackTransform);
         }
 
-        public void PlaySound3DAtVector3(AudioClip audioClip, Vector3 pos)
+        public void PlaySound3DAtVector3(AudioClip audioClip, Vector3 pos, Transform attackTr)
         {
-            if (ReferenceEquals(null, audioClip) )
+            if (ReferenceEquals(null, audioClip))
             {
                 return;
             }
             var target = ObjectPoolManager.Instance.RequestDynamicComponentObject(soundObjectPrefab);
             activeSoundObjectQueue.Enqueue(target);
+            target.followObject = attackTr;
 
             if (activeSoundObjectQueue.Count > 24)
             {
@@ -69,8 +116,8 @@ namespace lLCroweTool.Sound
             
 
 
-            target.transform.SetParent(transform);
-            target.InitTrObjPrefab(pos,transform);
+            //사운드매니저 하위에 배치
+            target.InitTrObjPrefab(pos, transform);
 
 #if SteamAudio
             InitSteamAudio(target.audioSource, audioClip);

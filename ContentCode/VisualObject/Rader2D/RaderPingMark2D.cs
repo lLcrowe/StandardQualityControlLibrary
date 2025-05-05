@@ -48,7 +48,7 @@ namespace lLCroweTool.RaderSystem
             tr.DOScale(endScale, time).OnComplete(disableAction);            
 
             tr.InitTrObjPrefab(pos);
-            SoundManager.Instance.PlaySound3DAtVector3(audioClip, pos);
+            SoundManager.Instance.PlaySound3DAtVector3(audioClip, pos, null);
         }
 
         private void Disable()
