@@ -2636,6 +2636,32 @@ namespace lLCroweTool
             UnityEditor.AssetDatabase.Refresh();
 #endif
         }
+
+
+        /// <summary>
+        /// 리터널(상수폴)에 등록
+        /// </summary>
+        /// <param name="content">컨텐츠</param>
+        /// <returns>컨텐츠</returns>
+        public static string CheckAndAddReternal(in string content)
+        {
+            //비었는지 체크
+            if (string.IsNullOrEmpty(content))
+            {
+                return content;
+            }
+
+            //등록됫는지
+            if (string.IsInterned(content) != null)
+            {
+                return content;
+            }
+
+            //등록
+            var newContent = string.Intern(content);
+            return newContent;
+        }
+
     }
 
     //※비교자 제작시 확인할것

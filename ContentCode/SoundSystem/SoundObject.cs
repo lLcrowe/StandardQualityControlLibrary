@@ -35,9 +35,11 @@ namespace lLCroweTool.Sound
                 {
                     tr.position = followObject.position;
                 }
-                yield return null;                
-            } while (Time.time < length + time);
+                yield return null;
+                //} while (Time.time < length + time);
+            } while (audioSource.isPlaying);
 
+                
             followObject = null;
             gameObject.SetActive(false);
         }

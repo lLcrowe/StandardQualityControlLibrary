@@ -1,5 +1,6 @@
 ﻿using lLCroweTool.Dictionary;
 using lLCroweTool.Singleton;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,12 +13,21 @@ namespace lLCroweTool.Sound
         public SoundObject soundObjectPrefab;
         public float distance;
 
+        public int limitSoundObjectAmount;
         public Queue<SoundObject> activeSoundObjectQueue = new Queue<SoundObject>(24);
+        
 
-    
+        [System.Serializable]
         public class TagToSoundDataBible : CustomDictionary<string, List<AudioClip>> { }
 
         public TagToSoundDataBible tagToSoundDataBible = new();
+
+
+        public int activeSoundAmount;
+
+        //오랫동안 작동할거
+        [Header("백그라운드뮤직")]
+        public List<SoundObject> soundObjectList = new();
 
         protected override void Init()
         {
@@ -30,11 +40,22 @@ namespace lLCroweTool.Sound
                 soundObjectPrefab = go.AddComponent<SoundObject>();
                 soundObjectPrefab.transform.parent = transform;
             }
+
+            StartCoroutine(SoundLimitCoroutine());
         }
 
 
-        public void RegisterTagToSoundData(in string tag, in AudioClip audioClip)
+        public void RegisterTagToSoundData(in string tag, in AudioClip[] audioClipArray)
         {
+            for (int i = 0; i < audioClipArray.Length; i++)
+            {
+                var clip = audioClipArray[i];
+                RegisterTagToSoundData(tag, clip);
+            }
+        }
+
+        public void RegisterTagToSoundData(in string tag, in AudioClip audioClip)
+        {             
             if (audioClip == null)
             {
                 return;
@@ -48,14 +69,19 @@ namespace lLCroweTool.Sound
             //등록
             if (!tagToSoundDataBible.TryGetValue(tag, out var clipList))
             {
-
                 List<AudioClip> audioClipList = new();
-
-                tagToSoundDataBible.Add(tag, audioClipList);
+                var targetTag = lLcroweUtil.CheckAndAddReternal(tag);
+                tagToSoundDataBible.Add(targetTag, audioClipList);
+                
 
                 clipList = audioClipList;
             }
 
+            //중복처리
+            if (clipList.Contains(audioClip))
+            {
+                return;
+            }
             clipList.Add(audioClip);
         }
 
@@ -94,26 +120,7 @@ namespace lLCroweTool.Sound
             }
             var target = ObjectPoolManager.Instance.RequestDynamicComponentObject(soundObjectPrefab);
             activeSoundObjectQueue.Enqueue(target);
-            target.followObject = attackTr;
-
-            if (activeSoundObjectQueue.Count > 24)
-            {
-                do
-                {
-                    if (activeSoundObjectQueue.Count > 0)
-                    {
-                        break;
-                    }
-                    var sound =  activeSoundObjectQueue.Dequeue();
-                    if (!sound.isActiveAndEnabled)
-                    {
-                        continue;
-                    }
-                    sound.SetActive(false);
-
-                } while (true);
-            }
-            
+            target.followObject = attackTr;            
 
 
             //사운드매니저 하위에 배치
@@ -160,6 +167,29 @@ namespace lLCroweTool.Sound
         }
 #endif
 
+        private IEnumerator SoundLimitCoroutine()
+        {
+            while (true)
+            {
+                activeSoundAmount = activeSoundObjectQueue.Count;
+                
+                //일정수량이상이면 작동//아니면 넘어감
+                if (activeSoundObjectQueue.Count > limitSoundObjectAmount)
+                {   
+                    var sound = activeSoundObjectQueue.Dequeue();
 
+                    //비활성화된오브젝트는 넘어감
+                    if (!sound.isActiveAndEnabled)
+                    {
+                        continue;
+                    }
+
+                    //큐는 먼저싸인거 순서로 작동되므로 활성화되있으면 비활성화처리
+                    sound.SetActive(false);
+                }
+                yield return null;
+            }
+            
+        }
     }
 }
