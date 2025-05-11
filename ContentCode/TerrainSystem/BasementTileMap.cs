@@ -1,4 +1,4 @@
-﻿#if Doozy
+﻿
 
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -6,8 +6,8 @@ using lLCroweTool.Dictionary;
 using System.Collections.Generic;
 using lLCroweTool.TimerSystem;
 using lLCroweTool.TerrainSystem.SuctionPower;
-using lLCroweTool.BuildingSystem;
 using lLCroweTool.TileMap;
+using UnityEditor.SearchService;
 
 namespace lLCroweTool.TerrainSystem.BasementTileMap
 {
@@ -25,7 +25,18 @@ namespace lLCroweTool.TerrainSystem.BasementTileMap
         /// </summary>
         SideView,
     }
-        
+
+    public enum BuildingType
+    {
+        Frame,
+        Floor,
+        Wall,
+        Door,
+        Building,
+        Pipe
+    }
+
+
     public class BasementTileMap : UpdateTimerModule_Base
     {
         //전초기지 타일맵 기초
@@ -89,7 +100,8 @@ namespace lLCroweTool.TerrainSystem.BasementTileMap
             
             SetTimer(0.001f);            
 
-            AstarPath.active.Scan();
+            //길찾기처리
+            //AstarPath.active.Scan();
         }
 
         public void RefleshBasementTileMap()
@@ -181,7 +193,7 @@ namespace lLCroweTool.TerrainSystem.BasementTileMap
         /// </summary>
         /// <param name="pos">위치</param>
         /// <param name="tile">바닥에쓸 건물데이터</param>
-        public void AddVoidRoomInfo(Vector3Int pos, BuildingObjectScript buildingData)
+        public void AddVoidRoomInfo(Vector3Int pos, GameObject buildingData)
         {
             //바닥건설시에만 작동됨
             if (!voidRoomBible.ContainsKey(pos))
@@ -192,13 +204,17 @@ namespace lLCroweTool.TerrainSystem.BasementTileMap
                 VoidRoomInfo voidRoomInfo = new VoidRoomInfo(isOutSide, true, maxOxygenValue, actionTime, pos, this);                
                 voidRoomBible.Add(pos, voidRoomInfo);
 
+
+                //20250511
+                //구조가 이상한데
+
                 //건물데이터세팅후 산소로직세팅
-                voidRoomInfo.SetBuildingData(buildingData);
-                SetVoidRoomInfoOxygenAction(voidRoomInfo, buildingData.buildingType, true);
+                voidRoomInfo.SetBuildingData(buildingData);                
+                //SetVoidRoomInfoOxygenAction(voidRoomInfo, buildingData.buildingType, true);
 
                 //타일맵세팅
                 lLcroweRectTileMapUtil.SetTile(pos, TileFlags.None, tilemap);
-                lLcroweRectTileMapUtil.SetTile(pos, buildingData.buildingTile, tilemap);
+                //lLcroweRectTileMapUtil.SetTile(pos, buildingData.buildingTile, tilemap);
 
                 //재설정
                 vector3IntArray = lLcroweRectTileMapUtil.GetAllTilePos(tilemap);//모든배치타일 가져오기
@@ -210,10 +226,10 @@ namespace lLCroweTool.TerrainSystem.BasementTileMap
                 //건물데이터세팅후 산소로직세팅
                 VoidRoomInfo voidRoomInfo = voidRoomBible[pos];
                 voidRoomInfo.SetBuildingData(buildingData);
-                SetVoidRoomInfoOxygenAction(voidRoomInfo, buildingData.buildingType, true);
+                //SetVoidRoomInfoOxygenAction(voidRoomInfo, buildingData.buildingType, true);
 
                 //타일맵세팅
-                lLcroweRectTileMapUtil.SetTile(pos, buildingData.buildingTile, tilemap);
+                //lLcroweRectTileMapUtil.SetTile(pos, buildingData.buildingTile, tilemap);
             }
         }
 
@@ -222,31 +238,33 @@ namespace lLCroweTool.TerrainSystem.BasementTileMap
         /// </summary>
         /// <param name="pos">위치</param>
         /// <param name="isDeleteVoidRoomInfo">빈공간사전에서 아예없애는 여부</param>
-        public void RemoveVoidRoomInfo(Vector3Int pos, BuildingObjectScript buildingData, bool isDeleteVoidRoomInfo = false)
+        public void RemoveVoidRoomInfo(Vector3Int pos, GameObject buildingData, bool isDeleteVoidRoomInfo = false)
         {
             //바닥해체시에만 작동됨
             if (voidRoomBible.ContainsKey(pos))
             {
                 VoidRoomInfo voidRoomInfo = voidRoomBible[pos];
-                switch (buildingData.buildingType)
-                {
-                    case BuildingType.Frame:
-                    case BuildingType.Floor:
-                        voidRoomInfo.SetBuildingData(null);
-                        //타일맵세팅
-                        lLcroweRectTileMapUtil.SetTile(pos, null, tilemap);
 
-                        SetVoidRoomInfoOxygenAction(voidRoomInfo, BuildingType.Floor, false);
-                        break;
-                    case BuildingType.Wall:
-                    case BuildingType.Door:
-                        SetVoidRoomInfoOxygenAction(voidRoomInfo, BuildingType.Wall, false);
-                        break;
-                    case BuildingType.Building:
-                    case BuildingType.Pipe:
-                        //해당사항없음
-                        break;                    
-                }
+                //20250511대기
+                //switch (buildingData.buildingType)
+                //{
+                //    case BuildingType.Frame:
+                //    case BuildingType.Floor:
+                //        voidRoomInfo.SetBuildingData(null);
+                //        //타일맵세팅
+                //        lLcroweRectTileMapUtil.SetTile(pos, null, tilemap);
+
+                //        SetVoidRoomInfoOxygenAction(voidRoomInfo, BuildingType.Floor, false);
+                //        break;
+                //    case BuildingType.Wall:
+                //    case BuildingType.Door:
+                //        SetVoidRoomInfoOxygenAction(voidRoomInfo, BuildingType.Wall, false);
+                //        break;
+                //    case BuildingType.Building:
+                //    case BuildingType.Pipe:
+                //        //해당사항없음
+                //        break;                    
+                //}
                 
 
                 //빈공간정보를 지우는 여부
@@ -314,7 +332,9 @@ namespace lLCroweTool.TerrainSystem.BasementTileMap
                         //산소로직변경
                         voidRoomInfo.SetOxygenAction(true, BuildingType.Wall);
                     }
-                    AstarPath.active.Scan();
+
+                    //길찾기관련
+                    //AstarPath.active.Scan();
                     break;
                 case BuildingType.Building:
                 case BuildingType.Pipe:
@@ -342,14 +362,80 @@ namespace lLCroweTool.TerrainSystem.BasementTileMap
         }
 
 
+
+
+        /// <summary>
+        /// 현재 타일맵에 배치된 타일들을 텍스처로 찍어보내는법
+        /// 보통 타일 sprite는 32px
+        /// </summary>
+        /// 
+        /// <returns></returns>
+        public Texture2D GenerateTileMapTexture(int pixelsPerUnit = 32)
+        {
+            //20255011
+            //오래걸릴거 같은데
+            //백그라운드처리 생각해보기
+            if (tilemap == null) return null;
+
+            // 타일맵 범위 구하기
+            tilemap.CompressBounds();
+            BoundsInt bounds = tilemap.cellBounds;
+
+            int width = bounds.size.x;
+            int height = bounds.size.y;
+            Texture2D texture = new Texture2D(width * pixelsPerUnit, height * pixelsPerUnit);
+
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    Vector3Int cellPos = new Vector3Int(x + bounds.x, y + bounds.y, 0);
+                    TileBase tile = tilemap.GetTile(cellPos);
+
+                    if (tile is Tile tileObj && tileObj.sprite != null)
+                    {
+                        Texture2D spriteTex = tileObj.sprite.texture;
+                        Rect spriteRect = tileObj.sprite.textureRect;
+
+                        Color[] pixels = spriteTex.GetPixels(
+                            (int)spriteRect.x, (int)spriteRect.y,
+                            (int)spriteRect.width, (int)spriteRect.height);
+
+                        int px = x * pixelsPerUnit;
+                        int py = y * pixelsPerUnit;
+                        texture.SetPixels(px, py, (int)spriteRect.width, (int)spriteRect.height, pixels);
+                    }
+                }
+            }
+
+            texture.Apply();
+            return texture;
+        }
+
 #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             Vector3 origin = transform.position;
+            var camera = UnityEditor.SceneView.lastActiveSceneView.camera;
+            if (camera == null)
+            {
+                return;
+            }
+
+            var cameraPos = camera.transform.position;
+            var offset = new Vector2(0.15f,0.25f);
             for (int i = 0; i < vector3IntArray.Length; i++)
             {
                 Vector3 tempPos = vector3IntArray[i];
-                UnityEditor.Handles.Label(origin + tempPos, $"{tempPos}");
+                var tileWorldPos = origin + tempPos;
+
+
+                if (!lLcroweUtil.CheckDistance(cameraPos, tileWorldPos, 10))
+                {
+                    continue;
+                }
+
+                UnityEditor.Handles.Label(tileWorldPos + (Vector3)offset, $"{tempPos}");
             }
         }
 #endif
@@ -414,7 +500,7 @@ namespace lLCroweTool.TerrainSystem.BasementTileMap
         //해당되는 타일위치와 타일맵
         [SerializeField] private Vector3Int targetTilePos;//현산소정보타일좌표
         [SerializeField] private BasementTileMap targetBasementTilemap;//타일맵
-        [SerializeField] private BuildingObjectScript targetBuildingData;//건설된 데이터
+        [SerializeField] private GameObject targetBuildingData;//건설된 데이터
 
         //산소 관련        
         [SerializeField] private Vector3Int[] nearOxygenArray;//근처산소 위치
@@ -457,7 +543,7 @@ namespace lLCroweTool.TerrainSystem.BasementTileMap
         /// 빈공간 정보에 건물데이터를 세팅하는 함수.프레임,바닥종류만
         /// </summary>
         /// <param name="buildingData">빌딩데이터</param>
-        public void SetBuildingData(BuildingObjectScript buildingData)
+        public void SetBuildingData(GameObject buildingData)
         {
             targetBuildingData = buildingData;
         }
@@ -466,7 +552,7 @@ namespace lLCroweTool.TerrainSystem.BasementTileMap
         /// 빈공간 정보에 건물데이터를 가져오는 함수
         /// </summary>
         /// <returns>건물데이터</returns>
-        public BuildingObjectScript GetBuildingData()
+        public GameObject GetBuildingData()
         {
             return targetBuildingData;
         }
@@ -812,4 +898,3 @@ namespace lLCroweTool.TerrainSystem.BasementTileMap
         } 
     }
 }
-#endif

@@ -26,8 +26,8 @@ namespace lLCroweTool.Sound
         }
         private IEnumerator DeActive()
         {
-            float time = Time.time;
-            float length = audioSource.clip.length;
+            //float time = Time.time;
+            //float length = audioSource.clip.length;
             var tr = transform;
             do
             {   
@@ -43,6 +43,28 @@ namespace lLCroweTool.Sound
             followObject = null;
             gameObject.SetActive(false);
         }
-       
+
+        private IEnumerator FadeOutAndDisable(SoundObject soundObject, float duration = 0.5f)
+        {
+            var audioSource = soundObject.audioSource;
+            if (audioSource == null) yield break;
+
+            float startVolume = audioSource.volume;
+            float time = 0f;
+
+            while (time < duration)
+            {
+                if (!audioSource.isPlaying) break;
+
+                time += Time.unscaledDeltaTime;
+                audioSource.volume = Mathf.Lerp(startVolume, 0f, time / duration);
+                yield return null;
+            }
+
+            audioSource.Stop();
+            audioSource.volume = startVolume; // 원복
+            soundObject.SetActive(false);
+        }
+
     }
 }

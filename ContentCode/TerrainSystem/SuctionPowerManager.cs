@@ -1,4 +1,4 @@
-﻿#if Explore2D
+﻿
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Events;
@@ -145,4 +145,3 @@ namespace lLCroweTool.TerrainSystem.SuctionPower
         }
     }
 }
-#endif

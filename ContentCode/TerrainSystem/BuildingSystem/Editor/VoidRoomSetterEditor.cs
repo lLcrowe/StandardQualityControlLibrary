@@ -1,7 +1,9 @@
 ﻿
-#if UNITY_EDITOR && Doozy
+#if UNITY_EDITOR
 using lLCroweTool.BuildingSystem;
+using lLCroweTool.InputKey;
 using lLCroweTool.TerrainSystem.BasementTileMap;
+using lLCroweTool.TileMap;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -33,7 +35,7 @@ namespace lLCroweTool.QC.EditorOnly
         private Vector3 startPos;
 
         [Header("건설관련")]
-        public BuildingObjectScript targetBuildingData;    
+        public GameObject targetBuildingData;    
         private bool check = false;
         private bool isChangeColor = false;
         private SpriteRenderer sr;
@@ -69,11 +71,13 @@ namespace lLCroweTool.QC.EditorOnly
             else if (Input.GetKey(KeyCode.Mouse0))
             {
                 Vector3Int cellPos;
+                var check = false;
                 switch (voidRoomSetterMode)
                 {
                     case VoidRoomSetterMode.Build:
                         //건설
-                        check = BuildingPointer.Instance.CheckIsBuilding(targetBuildingData, transform.position, targetBasementTileMap);
+                       
+                        //check = BuildingPointer.Instance.CheckIsBuilding(targetBuildingData, transform.position, targetBasementTileMap);
                         if (!check)
                         {
                             //컬러변경
@@ -82,11 +86,12 @@ namespace lLCroweTool.QC.EditorOnly
                         }
                         BluePrintObjectChangeColor(true);
 
-                        BuildingPointer.Instance.BuildBuilding(targetBuildingData, transform.position, targetBasementTileMap, true);
+                        //BuildingPointer.Instance.BuildBuilding(targetBuildingData, transform.position, targetBasementTileMap, true);
                         break;
                     case VoidRoomSetterMode.Dismantle:
                         //해체
-                        check = BuildingPointer.Instance.CheckIsDismantle(transform.position, true, targetBasementTileMap.GetTileMap());
+                        
+                        //check = BuildingPointer.Instance.CheckIsDismantle(transform.position, true, targetBasementTileMap.GetTileMap());
                         if (!check)
                         {
                             //컬러변경
@@ -95,13 +100,13 @@ namespace lLCroweTool.QC.EditorOnly
                         }
                         BluePrintObjectChangeColor(true);
 
-                        BuildingPointer.Instance.DismantleFloor(transform.position, targetBasementTileMap, true);
+                        //BuildingPointer.Instance.DismantleFloor(transform.position, targetBasementTileMap, true);
                         break;
                     case VoidRoomSetterMode.OxygenAdd:
                         //산소추가
-                        cellPos = lLcroweUtil.GetWorldToCell(transform.position, targetBasementTileMap.GetTileMap());
+                        cellPos = lLcroweRectTileMapUtil.GetWorldToCell(transform.position, targetBasementTileMap.GetTileMap());
 
-                        if (lLcroweUtil.GetIsExistTile(cellPos, targetBasementTileMap.GetTileMap()))
+                        if (lLcroweRectTileMapUtil.GetIsExistTile(cellPos, targetBasementTileMap.GetTileMap()))
                         {
                             VoidRoomInfo voidRoomInfo = targetBasementTileMap.GetVoidRoomInfo(cellPos);
                             voidRoomInfo.AddOxygenValue(oxygenValue);
@@ -109,9 +114,9 @@ namespace lLCroweTool.QC.EditorOnly
                         break;
                     case VoidRoomSetterMode.OxygenRemove:
                         //산소빼기
-                        cellPos = lLcroweUtil.GetWorldToCell(transform.position, targetBasementTileMap.GetTileMap());
+                        cellPos = lLcroweRectTileMapUtil.GetWorldToCell(transform.position, targetBasementTileMap.GetTileMap());
 
-                        if (lLcroweUtil.GetIsExistTile(cellPos, targetBasementTileMap.GetTileMap()))
+                        if (lLcroweRectTileMapUtil.GetIsExistTile(cellPos, targetBasementTileMap.GetTileMap()))
                         {
                             VoidRoomInfo voidRoomInfo = targetBasementTileMap.GetVoidRoomInfo(cellPos);
                             voidRoomInfo.RemoveOxygenValue(oxygenValue);
@@ -120,31 +125,31 @@ namespace lLCroweTool.QC.EditorOnly
                     case VoidRoomSetterMode.OutSideOxygen_True:
                     case VoidRoomSetterMode.OutSideOxygen_False:
                         //공기를 없애는 구간을 설정
-                        cellPos = lLcroweUtil.GetWorldToCell(transform.position, targetBasementTileMap.GetTileMap());
+                        cellPos = lLcroweRectTileMapUtil.GetWorldToCell(transform.position, targetBasementTileMap.GetTileMap());
 
-                        if (lLcroweUtil.GetIsExistTile(cellPos, targetBasementTileMap.GetTileMap()))
+                        if (lLcroweRectTileMapUtil.GetIsExistTile(cellPos, targetBasementTileMap.GetTileMap()))
                         {
                             VoidRoomInfo voidRoomInfo = targetBasementTileMap.GetVoidRoomInfo(cellPos);
                             if (voidRoomSetterMode == VoidRoomSetterMode.OutSideOxygen_True)
                             {
                                 voidRoomInfo.isOutSideOxygen = true;
-                                lLcroweUtil.SetTile(cellPos, Color.red, targetBasementTileMap.GetTileMap());
+                                lLcroweRectTileMapUtil.SetTile(cellPos, Color.red, targetBasementTileMap.GetTileMap());
                             }
                             else
                             {
                                 voidRoomInfo.isOutSideOxygen = false;
 
                                 float colorAlphaValue = voidRoomInfo.GetCurOxygenValue() / (float)voidRoomInfo.GetMaxOxygenValue();
-                                lLcroweUtil.SetTile(cellPos, 1, colorAlphaValue, colorAlphaValue, 1, targetBasementTileMap.GetTileMap());//컬러
+                                lLcroweRectTileMapUtil.SetTile(cellPos, 1, colorAlphaValue, colorAlphaValue, 1, targetBasementTileMap.GetTileMap());//컬러
                             }
                         }
                         break;
                     case VoidRoomSetterMode.ConstOxygen_True:
                     case VoidRoomSetterMode.ConstOxygen_False:
                         //변화하는 산소인지 설정
-                        cellPos = lLcroweUtil.GetWorldToCell(transform.position, targetBasementTileMap.GetTileMap());
+                        cellPos = lLcroweRectTileMapUtil.GetWorldToCell(transform.position, targetBasementTileMap.GetTileMap());
 
-                        if (lLcroweUtil.GetIsExistTile(cellPos, targetBasementTileMap.GetTileMap()))
+                        if (lLcroweRectTileMapUtil.GetIsExistTile(cellPos, targetBasementTileMap.GetTileMap()))
                         {
                             VoidRoomInfo voidRoomInfo = targetBasementTileMap.GetVoidRoomInfo(cellPos);                        
 
@@ -165,16 +170,16 @@ namespace lLCroweTool.QC.EditorOnly
                 switch (voidRoomSetterMode)
                 {
                     case VoidRoomSetterMode.OxygenAddBox:
-                        lLcroweUtil.BoxFill(startPos, transform.position, oxygenTile, targetBasementTileMap.GetTileMap());
+                        lLcroweRectTileMapUtil.BoxFill(startPos, transform.position, oxygenTile, targetBasementTileMap.GetTileMap());
                         break;
                     case VoidRoomSetterMode.OxygenRemoveBox:
-                        lLcroweUtil.BoxFill(startPos, transform.position, null, targetBasementTileMap.GetTileMap());
+                        lLcroweRectTileMapUtil.BoxFill(startPos, transform.position, null, targetBasementTileMap.GetTileMap());
                         break;
                     case VoidRoomSetterMode.OxygenAddLine:
-                        lLcroweUtil.DDALine(startPos, transform.position, oxygenTile, targetBasementTileMap.GetTileMap(), fillGaps);
+                        lLcroweRectTileMapUtil.DDALine(startPos, transform.position, oxygenTile, targetBasementTileMap.GetTileMap(), fillGaps);
                         break;
                     case VoidRoomSetterMode.OxygenRemoveLine:
-                        lLcroweUtil.DDALine(startPos, transform.position, null, targetBasementTileMap.GetTileMap(), fillGaps);
+                        lLcroweRectTileMapUtil.DDALine(startPos, transform.position, null, targetBasementTileMap.GetTileMap(), fillGaps);
                         break;
                 }
                 targetBasementTileMap.RefleshBasementTileMap();
@@ -189,7 +194,7 @@ namespace lLCroweTool.QC.EditorOnly
                     return;
                 }
                 voidRoomSetterMode = VoidRoomSetterMode.Build;
-                sr.sprite = targetBuildingData.bluePrintBuildingImage;
+                //sr.sprite = targetBuildingData.bluePrintBuildingImage;
 
             }
             else if (Input.GetKeyUp(KeyCode.Alpha2))
