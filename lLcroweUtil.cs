@@ -196,6 +196,14 @@ namespace lLCroweTool
         //    return tempObject as T;
         //}
 
+         public static void GetAddComponent<T>(this GameObject go, out T component) where T : Component
+         {
+             if (!go.TryGetComponent(out component))
+             {
+                 component = gameObject.AddComponent<T>();
+             }
+         }
+
         /// <summary>
         /// 해당 게임오브젝트에서 컴포넌트를 추가하거나 찾는 함수
         /// </summary>
