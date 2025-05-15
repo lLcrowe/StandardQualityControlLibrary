@@ -196,6 +196,11 @@ namespace lLCroweTool
         //    return tempObject as T;
         //}
 
+         public static void GetAddComponent<T>(this Component component, out T outComponent) where T : Component
+         {
+             GetAddComponent(component.gameObject, out outComponent);
+         }
+
          public static void GetAddComponent<T>(this GameObject go, out T component) where T : Component
          {
              if (!go.TryGetComponent(out component))
