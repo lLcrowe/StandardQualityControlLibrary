@@ -1,8 +1,7 @@
-﻿#if MEC
-using UnityEngine;
+﻿using UnityEngine;
 using DG.Tweening;
-using MEC;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace lLCroweTool.Visual.PhysicObject
 {
@@ -53,8 +52,8 @@ namespace lLCroweTool.Visual.PhysicObject
             }
             if (isDisappear)
             {
-                //게임오브젝트 비활성화와 되돌리기
-                Timing.RunCoroutine(WaitAndDeActive(visualPhysicObject, disableTimer));
+
+                ActionWaitDeActive(visualPhysicObject, disableTimer);
             }
         }
 
@@ -86,16 +85,49 @@ namespace lLCroweTool.Visual.PhysicObject
             sr.color = color;
             sr.DOFade(0, disableTimer);
 
-            //게임오브젝트 비활성화와 되돌리기
-            Timing.RunCoroutine(WaitAndDeActive(visualPhysicObject, disableTimer));
+            ActionWaitDeActive(visualPhysicObject, disableTimer);
         }
 
+
+
+        private static void ActionWaitDeActive(VisualPhysic2DObject visualPhysicObject, float disableTimer)
+        {
+
+#if MEC
+            //게임오브젝트 비활성화와 되돌리기
+            Timing.RunCoroutine(WaitAndDeActive(visualPhysicObject, disableTimer));
+#else
+
+            visualPhysicObject.StartCoroutine(WaitAndDeActive(visualPhysicObject, disableTimer));
+
+#endif
+
+
+        }
+
+        private static IEnumerator WaitAndDeActive(VisualPhysic2DObject visualPhysicObject, float disable)
+        {
+
+
+            float time = Time.time;
+            do
+            {
+                if (time + disable < Time.time) 
+                {
+                }
+                yield return null;
+            } while (true);
+
+            visualPhysicObject.gameObject.SetActive(false);
+        }
+
+#if MEC
         private static IEnumerator<float> WaitAndDeActive(VisualPhysic2DObject visualPhysicObject, float disable)
         {
             yield return Timing.WaitForSeconds(disable + 0.5f);
             visualPhysicObject.gameObject.SetActive(false);
         }
-
+#endif
         /// <summary>
         /// 빈탄창 초기화
         /// </summary>
@@ -115,4 +147,3 @@ namespace lLCroweTool.Visual.PhysicObject
         }
     }
 }
-#endif

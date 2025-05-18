@@ -205,7 +205,7 @@ namespace lLCroweTool
          {
              if (!go.TryGetComponent(out component))
              {
-                 component = gameObject.AddComponent<T>();
+                 component = go.AddComponent<T>();
              }
          }
 
@@ -430,6 +430,23 @@ namespace lLCroweTool
             {
                 target.SetPositionAndRotation(parent.position, Quaternion.identity);
             }
+        }
+
+        /// <summary>
+        /// 타이머모듈의 타이머체크
+        /// </summary>
+        /// <returns>작동할 시간이 됫는지 여부</returns>
+        public static bool CheckTimer(this float timer, ref float time)
+        {
+            //시간체크
+            float curTime = Time.time;
+            bool check = curTime > timer;//작동할시간이 됫는지 여부
+            ;
+            if (check)
+            {
+                time = curTime;
+            }
+            return check;
         }
 
         /// <summary>
@@ -2405,7 +2422,7 @@ namespace lLCroweTool
         /// <param name="checkValue">기준이 될 위치값</param>
         /// <param name="range">범위</param>
         /// <returns>라운드된 최종값</returns>
-        public static float RoundToNear(float value, float checkValue, float range)
+        public static float GetRoundToNear(float value, float checkValue, float range)
         {
             //범위체크
             if (CheckRoundToNear(value, checkValue, range))

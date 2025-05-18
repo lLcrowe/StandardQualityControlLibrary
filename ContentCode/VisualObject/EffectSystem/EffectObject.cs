@@ -1,4 +1,4 @@
-﻿#if MEC
+﻿
 using UnityEngine;
 using MEC;
 using System.Collections.Generic;
@@ -51,4 +51,3 @@ namespace lLCroweTool
         }
     }
 }
-#endif
