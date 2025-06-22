@@ -55,6 +55,15 @@ namespace lLCroweTool.Dictionary
         public CustomDictionary():base() { }
         public CustomDictionary(int capacity) : base(capacity) { keyList = new List<T1>(capacity); valueList = new List<T2>(capacity); }
 
+        ~CustomDictionary()
+        {
+            keyList.Clear();
+            valueList.Clear();
+
+            keyList = null;
+            valueList = null;
+        }
+
         //ISerializationCallbackReceiver는
         //OnBeforeSerialize는 데이터를 저장할 때 호출
         //OnAfterDeserialize는 데이터를 불러올 때 호출

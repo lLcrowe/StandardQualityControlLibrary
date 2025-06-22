@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 using DG.Tweening;
-using System.Collections.Generic;
-using System.Collections;
 
 namespace lLCroweTool.Visual.PhysicObject
 {
@@ -35,12 +33,11 @@ namespace lLCroweTool.Visual.PhysicObject
             return tr;
         }
 
-        public static void ActionPhysic(VisualPhysic2DObject visualPhysicObject, bool isFadeObject, float tempFadeTime, bool isDisappear, float disableTimer)
+        public void ActionPhysic(bool isFadeObject, float tempFadeTime, bool isDisappear, float disableTimer)
         {
             //충돌체 활성화 부모객체변경
             //visualPhysicObject.rb2d.bodyType = RigidbodyType2D.Dynamic;            
-            visualPhysicObject.transform.parent = null;
-            SpriteRenderer sr = visualPhysicObject.sr;
+            transform.parent = null;            
             Color color = sr.color;
             color.a = 1;
             sr.color = color;
@@ -52,8 +49,7 @@ namespace lLCroweTool.Visual.PhysicObject
             }
             if (isDisappear)
             {
-
-                ActionWaitDeActive(visualPhysicObject, disableTimer);
+                this.ActionAndDisable(disableTimer, null);
             }
         }
 
@@ -64,10 +60,8 @@ namespace lLCroweTool.Visual.PhysicObject
         /// <param name="rotatePower">회전파워</param>
         /// <param name="forceMode2D">파워종류</param>
         /// <param name="disableTimer">사라지는 시간초</param>
-        public static void ActionPhysic(VisualPhysic2DObject visualPhysicObject, Vector2 directionPower, float rotatePower, ForceMode2D forceMode2D, float disableTimer)
+        public void ActionPhysic(Vector2 directionPower, float rotatePower, ForceMode2D forceMode2D, float disableTimer)
         {
-            Rigidbody2D rb2d = visualPhysicObject.rb2d;
-
             //쪼매 문제 될수도
             //힘작동
             rb2d.AddRelativeForce(directionPower, forceMode2D);
@@ -75,68 +69,19 @@ namespace lLCroweTool.Visual.PhysicObject
 
             //충돌체 활성화 부모객체변경
             rb2d.bodyType = RigidbodyType2D.Dynamic;
-            visualPhysicObject.col2d.enabled = true;
-            visualPhysicObject.transform.parent = null;
+            col2d.enabled = true;
+            transform.parent = null;
 
             //랜더링 사라지게
-            SpriteRenderer sr = visualPhysicObject.sr;
             Color color = sr.color;
             color.a = 1;
             sr.color = color;
             sr.DOFade(0, disableTimer);
 
-            ActionWaitDeActive(visualPhysicObject, disableTimer);
+
+            this.ActionAndDisable(disableTimer, null);
         }
 
-
-
-        private static void ActionWaitDeActive(VisualPhysic2DObject visualPhysicObject, float disableTimer)
-        {
-
-#if MEC
-            //게임오브젝트 비활성화와 되돌리기
-            Timing.RunCoroutine(WaitAndDeActive(visualPhysicObject, disableTimer));
-#else
-
-            visualPhysicObject.StartCoroutine(WaitAndDeActive(visualPhysicObject, disableTimer));
-
-#endif
-
-
-        }
-
-        private static IEnumerator WaitAndDeActive(VisualPhysic2DObject visualPhysicObject, float disable)
-        {
-
-
-            float time = Time.time;
-            do
-            {
-                if (time + disable < Time.time) 
-                {
-                }
-                yield return null;
-            } while (true);
-
-            visualPhysicObject.gameObject.SetActive(false);
-        }
-
-#if MEC
-        private static IEnumerator<float> WaitAndDeActive(VisualPhysic2DObject visualPhysicObject, float disable)
-        {
-            yield return Timing.WaitForSeconds(disable + 0.5f);
-            visualPhysicObject.gameObject.SetActive(false);
-        }
-#endif
-        /// <summary>
-        /// 빈탄창 초기화
-        /// </summary>
-        /// <param name="emtpyMagazine">타겟팅할 빈탄창</param>
-        public static void InitEmtpyMagazine(VisualPhysic2DObject visualPhysicObject)
-        {
-            visualPhysicObject.rb2d.bodyType = RigidbodyType2D.Kinematic;
-            visualPhysicObject.col2d.enabled = false;
-        }
 
         private void OnDestroy()
         {

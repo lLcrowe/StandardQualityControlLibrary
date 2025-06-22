@@ -2488,7 +2488,7 @@ namespace lLCroweTool
         /// <param name="min">최소값</param>
         /// <param name="max">최대값</param>
         /// <returns>변환값</returns>
-        public static float GetLimitAmount(this float cur, float min, float max)
+        public static float GetLimitAmount(this float cur, in float min, in float max)
         {
             cur = System.Math.Clamp(cur, min, max);
             return cur;
@@ -2667,6 +2667,33 @@ namespace lLCroweTool
 #endif
         }
 
+
+
+        public static void ActionAndDisable(this MonoBehaviour monoBehaviour, float timer, System.Action<float> timerAction)
+        {
+            monoBehaviour.StartCoroutine(ActionAndDisableCoroutine(monoBehaviour, timer, timerAction));
+        }
+
+
+        private static IEnumerator ActionAndDisableCoroutine(Component component, float timer, System.Action<float> timerAction)
+        {
+            //시간체크
+            float time = 0;
+            do
+            {
+                if (timer < time)
+                {
+                    break;
+                }
+
+                timerAction?.Invoke(time);
+                time += Time.deltaTime;
+                yield return null;
+            } while (true);
+
+            //비활성화
+            component.gameObject.SetActive(false);
+        }
 
         /// <summary>
         /// 리터널(상수폴)에 등록

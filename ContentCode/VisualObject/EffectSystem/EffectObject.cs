@@ -1,7 +1,6 @@
-﻿
-using UnityEngine;
-using MEC;
+﻿using UnityEngine;
 using System.Collections.Generic;
+using UILibrary;
 
 namespace lLCroweTool
 {
@@ -36,12 +35,13 @@ namespace lLCroweTool
             transform.rotation = lLcroweUtil.GetRotation(curPos, hitPos);
             //transform.parent = null;
 
-            StartCoroutine(ActionEffectCoroutine(this));
+            this.ActionAndDisable(fadeTime, null);
         }
 
 
+#if MEC
 
-        private static IEnumerator<float> ActionEffectCoroutine(EffectObject effectObject)
+      private static IEnumerator<float> ActionEffectCoroutine(EffectObject effectObject)
         {
             float timer = effectObject.fadeTime;
             //이팩트액션작동
@@ -49,5 +49,6 @@ namespace lLCroweTool
             yield return Timing.WaitForSeconds(timer);
             effectObject.gameObject.SetActive(false);
         }
+#endif
     }
 }
