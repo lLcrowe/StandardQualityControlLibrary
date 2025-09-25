@@ -7,7 +7,9 @@
         "GUID:0879d4e705e8fa540971fad5777825b5",
         "GUID:6055be8ebefd69e48b49212b09b47b2f",
         "GUID:08434638eac213543a331010c3208f46",
-        "GUID:856247919c5ca234eb91e5aba13fe10c"
+        "GUID:856247919c5ca234eb91e5aba13fe10c",
+        "GUID:1faeedbeec5e82544a0148a7dfb1cabb",
+        "GUID:0c1bc550c8203ae4796f6bdf7f0c1be2"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -15,7 +17,9 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "lLcroweAchievement"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }

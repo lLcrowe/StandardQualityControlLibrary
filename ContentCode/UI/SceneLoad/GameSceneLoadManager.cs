@@ -5,7 +5,6 @@ using UnityEngine.SceneManagement;
 using TMPro;
 using System.Collections;
 using lLCroweTool.Singleton;
-using lLCroweTool.UI.Bar;
 using lLCroweTool.DestroyManger;
 
 namespace lLCroweTool.UI.Scene
@@ -28,9 +27,6 @@ namespace lLCroweTool.UI.Scene
 
         public Sprite[] loadingImageSpriteArray = new Sprite[0];//여러로딩 스크린 이미지
         public Image loadingImageObject;//타겟 로딩 이미지
- 
-        //로딩관련
-        public UIBar_Base targetProgressBarImage;//프로그레스바용
 
         //팁관련
         public GameSceneTipObjectScript gameSceneTipsData;//팁데이터
@@ -46,7 +42,24 @@ namespace lLCroweTool.UI.Scene
         //해당이벤트는 Awake등에서 추가적으로 설정하거나 지우게 작업해줘야함
 
         //게임씬일을때만 작동되는 이벤트 
-        public UnityEvent gameSceneDoneLoadEvent = new UnityEvent();//씬이 로딩이 다됫으면 작동되는 이벤트
+        public readonly UnityEvent gameSceneDoneLoadEvent = new UnityEvent();//씬이 로딩이 다됫으면 작동되는 이벤트
+
+
+        //로딩관련 보여주는 처리
+        /// <summary>
+        /// 최소 최대 현재값
+        /// </summary>
+        public event System.Action<float, float, float> UIInitAction;
+
+        /// <summary>
+        /// UI 현재값 설정
+        /// </summary>
+        public event System.Action<float> UISetValueAction;
+
+        /// <summary>
+        /// UI 포맷 설정
+        /// </summary>
+        public event System.Action<string> UISetLabelFormatAction;
 
 
         // 20200313
@@ -72,7 +85,7 @@ namespace lLCroweTool.UI.Scene
         //          TipObject (팁을 보여주기 위한 용도)
         //          UIBar_Base (ProgressBar, ProgressText)(로딩이 얼마나 됫는지 체크)
         //          AnyKeyPushTextObject (애니키 입력을 활성화했을때 보여주는 용도)
-                
+
         protected override void Init()
         {
             LoadingScreenDeActive();
@@ -112,11 +125,11 @@ namespace lLCroweTool.UI.Scene
             op.allowSceneActivation = false;
             loadingScreenObject.SetActive(true);
             isLoading = true;
-
-            targetProgressBarImage.InitUIBar(0, 100, 0);
+            
+            UIInitAction?.Invoke(0,100,0);
             //"맵환경을 불려오고 있습니다. - " + temp * 100f + "%" + " -"
-            targetProgressBarImage.labelFormat = "맵환경을 불려오고 있습니다. - {cur}% -";
-            var waitForEndOfFrame = new WaitForEndOfFrame();            
+            UISetLabelFormatAction?.Invoke("맵환경을 불려오고 있습니다. - {cur}% -");
+            var waitForEndOfFrame = new WaitForEndOfFrame();
 
             //이미지체크
             if (loadingImageSpriteArray.Length == 0)
@@ -133,7 +146,7 @@ namespace lLCroweTool.UI.Scene
             //팁처리 로직
             if (gameSceneTipsData != null)
             {
-                StartCoroutine(GenerateTips());                
+                StartCoroutine(GenerateTips());
             }
 
             //애니키
@@ -148,7 +161,7 @@ namespace lLCroweTool.UI.Scene
             {
                 //0.9까지 오르고 안올라감//0.9가 최고 상태
                 float value = Mathf.Clamp01(op.progress / 0.9f);
-                targetProgressBarImage.SetCurValue(value * 10f);
+                UISetValueAction.Invoke(value * 10f);
                 yield return waitForEndOfFrame;
 
                 if (op.progress < 0.9f)
@@ -161,7 +174,7 @@ namespace lLCroweTool.UI.Scene
                 while (temp < 100 && !op.isDone)
                 {
                     temp += Time.deltaTime * 100f;
-                    targetProgressBarImage.SetCurValue(temp);
+                    UISetValueAction.Invoke(temp);
                     yield return waitForEndOfFrame;
                 }
 
@@ -193,9 +206,9 @@ namespace lLCroweTool.UI.Scene
 
 
             //작동되기위한 선언작동
-            isLoading = false;            
+            isLoading = false;
             gameSceneDoneLoadEvent?.Invoke();
-            gameSceneDoneLoadEvent.RemoveAllListeners();            
+            gameSceneDoneLoadEvent.RemoveAllListeners();
             LoadingScreenDeActive();
         }
 

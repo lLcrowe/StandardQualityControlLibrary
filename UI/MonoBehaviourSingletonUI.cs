@@ -1,5 +1,4 @@
-﻿using lLCroweTool.LogSystem;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace lLCroweTool.SingletonUI
 {
@@ -16,8 +15,11 @@ namespace lLCroweTool.SingletonUI
                     instance = FindObjectOfType<T>();
                     if (ReferenceEquals(instance, null))
                     {
-                        LogManager.Register("MonoBehaviourSingletonUIView", "MonoBehaviourSingletonUIView", true, true);
-                        LogManager.Log("MonoBehaviourSingletonUIView", "UI싱글턴을 사용하는 친구들은 미리세팅되어야합니다.", null, LogManager.LogType.Error);
+#if lLcroweLogSystem
+                        lLCroweTool.LogSystem.LogManager.Register("MonoBehaviourSingletonUIView", "MonoBehaviourSingletonUIView", true, true);
+                        lLCroweTool.LogSystem.LogManager.Log("MonoBehaviourSingletonUIView", "UI싱글턴을 사용하는 친구들은 미리세팅되어야합니다.", null, lLCroweTool.LogSystem.LogManager.LogType.Error);
+#endif
+                        Debug.LogError("MonoBehaviourSingletonUIView_UI싱글턴을 사용하는 친구들은 미리세팅되어야합니다.");
                     }
                 }
                 return instance;

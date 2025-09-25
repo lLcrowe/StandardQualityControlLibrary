@@ -1,6 +1,4 @@
 ﻿using UnityEngine;
-using lLCroweTool.TimerSystem;
-using UILibrary.Text;
 
 namespace lLCroweTool.GameWorldTimeSystem
 {
@@ -9,10 +7,14 @@ namespace lLCroweTool.GameWorldTimeSystem
         //월드타이머 UI 모듈
         //해당안에 작동되는 메서드를 구현
 
-        public TextPanel worldDayUI;//월드회차UI
-        public TextPanel worldTimeUI;//월드시간UI
-        public TextPanel dayornightUI;//낮시간인지 아닌지
-        public TextPanel timeRatioUI;//시간비율
+
+#if UILibrary
+        public UILibrary.Text.TextPanel worldDayUI;//월드회차UI
+        public UILibrary.Text.TextPanel worldTimeUI;//월드시간UI
+        public UILibrary.Text.TextPanel dayornightUI;//낮시간인지 아닌지
+        public UILibrary.Text.TextPanel timeRatioUI;//시간비율
+#endif
+        public event System.Action<float> timeSpeedAction;
 
 
         //월드회차 업데이트
@@ -41,12 +43,6 @@ namespace lLCroweTool.GameWorldTimeSystem
             {
                 dayornightUI.SetLabelText(string.Format("-= 밤 =-"));
             }
-        }
-
-        //시간비율UI업데이트
-        public void TiemRatioUIUpdate(float timeSpeed)
-        {
-            TimerModuleManager.Instance.SetTimerScale(timeSpeed);
         }
 
         private void OnDestroy()

@@ -1,5 +1,4 @@
 ﻿using lLCroweTool.InputKey;
-using lLCroweTool.LogSystem;
 using System.Collections;
 using UnityEngine;
 
@@ -25,10 +24,12 @@ namespace lLCroweTool.UI.MainMenu
         private KeyCode targetKeyCode;//타겟팅할 키코드        
 #endif
 
+#if lLcroweLogSystem
         protected void Awake()
         {
             LogManager.Register(name, name, true, true);
         }
+#endif
 
         private void Start()
         {
@@ -121,8 +122,14 @@ namespace lLCroweTool.UI.MainMenu
                     if (CheckOverlap(keyBible, targetKeyCode))
                     {
                         //중복됨
-                        //나중에 컨펌창 띄워주기 구역                    
-                        LogManager.Log(typeof(InputKeySettingUI), "중복됩니다", inputSettingButton.gameObject, LogManager.LogType.Info);
+                        //나중에 컨펌창 띄워주기 구역
+
+#if lLcroweLogSystem
+                        lLCroweTool.LogSystem.LogManager.Log(typeof(InputKeySettingUI), "중복됩니다", inputSettingButton.gameObject, lLCroweTool.LogSystem.LogManager.LogType.Info);
+#endif
+
+
+
                         break;
                     }
                     else

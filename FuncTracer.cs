@@ -1,8 +1,5 @@
-﻿using lLCroweTool.LogSystem;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 
 namespace lLCroweTool.QC.EditorOnly
 {
@@ -19,8 +16,9 @@ namespace lLCroweTool.QC.EditorOnly
         //임시로 제작
         public FuncTracer() 
         {
-            LogManager.Register(key, "FuncTrace_Log", false, true);
+            lLCroweTool.LogSystem.LogManager.Register(key, "FuncTrace_Log", false, true);
         }
+
 
         //추적할 체크포인트를 박아야되는 함수
         //문제점은 각 위치마다 박아야되므로 
@@ -33,7 +31,6 @@ namespace lLCroweTool.QC.EditorOnly
 
         public static void TraceFunctionCheckPoint()
         {
-#if UNITY_EDITOR
             lock (lockObject)
             {
                 var stackTrace = new StackTrace();
@@ -65,7 +62,8 @@ namespace lLCroweTool.QC.EditorOnly
                     LogManager.Log(key, lLcroweUtil.LogIList(tempList));
                 }
             }
-#endif
+
         }
+        #endif
     }
 }

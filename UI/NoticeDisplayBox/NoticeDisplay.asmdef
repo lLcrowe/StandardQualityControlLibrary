@@ -1,11 +1,7 @@
 {
-    "name": "lLcroweAchievement.Editor",
+    "name": "NoticeDisplay",
     "rootNamespace": "",
-    "references": [
-        "GUID:340630d5e02f62a41b99ee0bb5c95b4a",
-        "GUID:ced26061d7931104dbb3e14a8c5c4ddb",
-        "GUID:08434638eac213543a331010c3208f46"
-    ],
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
@@ -13,7 +9,7 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [
-        "lLcroweAchievement"
+        "Dotween"
     ],
     "versionDefines": [],
     "noEngineReferences": false

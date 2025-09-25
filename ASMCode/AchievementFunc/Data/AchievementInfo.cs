@@ -1,5 +1,4 @@
-﻿using lLCroweTool.UI.Bar;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace lLCroweTool.Achievement
 {
@@ -10,9 +9,9 @@ namespace lLCroweTool.Achievement
 
         //설정
         public bool isAutoUnlock; //자동으로 해금되는요소//주기적으로 체크하는 부분?
-        
+
         //프리팹들
-        public UIBar_Base uiBarPrefab;        
+        //public lLCroweTool.UI.Bar.UIBar_Base uiBarPrefab;
     }
 
     //업적행위 태그타입들//레코드ID임 별거없음//기록소랑 연동됨

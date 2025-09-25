@@ -1,5 +1,4 @@
 ﻿using lLCroweTool.Dictionary;
-using lLCroweTool.LogSystem;
 using System.Collections.Generic;
 
 namespace lLCroweTool.DataBase
@@ -25,7 +24,9 @@ namespace lLCroweTool.DataBase
             {
                 if (!bible.TryAdd(item.labelID, item))
                 {
-                    LogManager.Log("DataImport", $"{typeof(T2)}타입의 {item.labelID}이름을 가진 데이터가 중복되어 등록이 안됫습니다.");
+#if lLcroweLogSystem
+                    lLCroweTool.LogSystem.LogManager.Log("DataImport", $"{typeof(T2)}타입의 {item.labelID}이름을 가진 데이터가 중복되어 등록이 안됫습니다.");
+#endif
                 }
             }
         }
@@ -43,7 +44,9 @@ namespace lLCroweTool.DataBase
         {
             if (func == null)
             {
-                LogManager.Log("DataImport", $"{typeof(T3)}타입이 들어갈 이벤트함수가 비어있어서 작동을 안합니다.");
+#if lLcroweLogSystem
+                lLCroweTool.LogSystem.LogManager.Log("DataImport", $"{typeof(T3)}타입이 들어갈 이벤트함수가 비어있어서 작동을 안합니다.");
+#endif
                 return;
             }
             foreach (var item in infoList)
@@ -52,7 +55,9 @@ namespace lLCroweTool.DataBase
                 customData = func.Invoke(customData, item);
                 if (bible.TryAdd(item.labelID, customData))
                 {
-                    LogManager.Log("DataImport", $"{typeof(T2)}타입의 {item.labelID}이름을 가진 데이터가 중복되어 등록이 안됫습니다.");
+#if lLcroweLogSystem
+                    lLCroweTool.LogSystem.lLCroweTool.LogSystem.LogManager.Log("DataImport", $"{typeof(T2)}타입의 {item.labelID}이름을 가진 데이터가 중복되어 등록이 안됫습니다.");
+#endif
                 }
             }
         }

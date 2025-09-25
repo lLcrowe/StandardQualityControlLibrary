@@ -17,6 +17,8 @@ namespace lLCroweTool.ScoreSystem
         Hill,           //힐량
     }
 
+    
+
     /// <summary>
     /// 점수 사전//점수타입//점수량
     /// </summary>
@@ -55,6 +57,8 @@ namespace lLCroweTool.ScoreSystem
 
     public class ScoreManager : MonoBehaviour
     {
+        public readonly static ScoreType[] ScoreTypeArray = lLcroweUtil.GetEnumDefineData<ScoreType>().ToArray();
+
         private static ScoreManager instance;
         public static ScoreManager Instance
         {

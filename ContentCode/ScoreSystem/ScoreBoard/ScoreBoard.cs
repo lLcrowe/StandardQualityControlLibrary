@@ -19,12 +19,16 @@ namespace lLCroweTool.ScoreSystem.UI
         public Transform targetContentTr;//소환될위치        
 
         //특정점수 정렬버튼들(대미지 히트 등등)
+        //필요시 늘릴것
         public Button damageSortButton;
         public Button hitSortButton;
         public Button hillSortButton;
 
-        public Button closeButton;
 
+
+
+        //닫기버튼
+        public Button closeButton;
 
 
         //점수데이터를 캐싱하는게 필요      
@@ -148,6 +152,12 @@ namespace lLCroweTool.ScoreSystem.UI
                 scoreInfoBible[sortScoreType].Sort(scoreValueSort);
             }
             
+
+
+            //구조에 혼란이 온거 같은데 나중에 시간날때 체크하기
+            //원하는 구조는 UI는껍데기여야함
+            //내부에서 다처리해야됨
+            //지금구조는 스코어보드가 다른 UIbar들을 가진 그룹들을 처리해야됨
             foreach (var item in scoreInfoBible[sortScoreType])
             {
                 UnitScoreUI unitScoreUI = ObjectPoolManager.Instance.RequestDynamicComponentObject(unitScoreUIPrefab);
@@ -158,9 +168,9 @@ namespace lLCroweTool.ScoreSystem.UI
                 var classIcon = item.unitObject.GetClassIcon();
 
                 unitScoreUI.InitUnitScoreUI(classIcon, unitIcon, maxScoreValue);
-                unitScoreUI.damageBar.SetCurValue(item.scoreTarget.GetScore(ScoreType.GiveDamage));
-                unitScoreUI.takenDamageBar.SetCurValue(item.scoreTarget.GetScore(ScoreType.TakenDamage));
-                unitScoreUI.hillBar.SetCurValue(item.scoreTarget.GetScore(ScoreType.Hill));
+                unitScoreUI.SetScoreValue(ScoreType.GiveDamage, item.scoreTarget.GetScore(ScoreType.GiveDamage));
+                unitScoreUI.SetScoreValue(ScoreType.TakenDamage, item.scoreTarget.GetScore(ScoreType.TakenDamage));
+                unitScoreUI.SetScoreValue(ScoreType.Hill, item.scoreTarget.GetScore(ScoreType.Hill));
 
                 float mainA = 1f;
                 float sizeA = 0.3f;

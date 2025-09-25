@@ -2,7 +2,6 @@
 using lLCroweTool.Dictionary;
 using lLCroweTool.Singleton;
 using UnityEngine;
-using lLCroweTool.LogSystem;
 
 namespace lLCroweTool.DataBase
 {
@@ -35,19 +34,21 @@ namespace lLCroweTool.DataBase
 
         protected override void Init()
         {
+#if lLcroweLogSystem
             LogManager.Register("DataImport", "DataBaseManager", false, false);
 
             //데이터베이스에서 가져와서 다 박아버리기
             if (dataBaseInfo == null)
             {
-                LogManager.Log("DataImport","데이터베이스 정보가 비어있습니다.");
+                lLCroweTool.LogSystem.LogManager.Log("DataImport","데이터베이스 정보가 비어있습니다.");
                 return;
             }
+#endif
 
             //데이터베이스
             //itemDataBaseBible.AddBibleForInfoList(dataBaseInfo.itemInfoList);
         }
-        
+
         public Sprite RequestSprite(string id)
         {
             spriteDataBaseBible.TryGetValue(id, out Sprite sprite);

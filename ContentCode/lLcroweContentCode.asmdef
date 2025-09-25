@@ -12,7 +12,9 @@
         "GUID:ad5709ca90dc26a479d7bdf03e1b8eaf",
         "GUID:856247919c5ca234eb91e5aba13fe10c",
         "GUID:08434638eac213543a331010c3208f46",
-        "GUID:61e3f21fc747ca645b79df2a171e7d45"
+        "GUID:61e3f21fc747ca645b79df2a171e7d45",
+        "GUID:1faeedbeec5e82544a0148a7dfb1cabb",
+        "GUID:12819f5f2ad239a4e8ac676b5ebdcf84"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -20,7 +22,9 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "UILibrary"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }
