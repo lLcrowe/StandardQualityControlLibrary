@@ -49,7 +49,7 @@ namespace lLCroweTool.InputKey
     [System.Serializable]
     public class CommandSystem
     {
-        public bool isUseMenualCheck;//수동으로 체크할지 여부//헬다이버즈2같은 류
+        public bool isUseManualCheck;//수동으로 체크할지 여부//헬다이버즈2같은 류
         public TimerModule_Element checkTimer;//시간으로 커맨드를 체크
         public List<string> keyCodeList = new (5);//입력키코드
         [System.Serializable] public class CommandBible : CustomDictionary<string, CommandKeyData> { };
@@ -63,7 +63,10 @@ namespace lLCroweTool.InputKey
         {
             checkTimer.SetTimer(0.3f);
             var temp = typeof(CommandSystem);
+
+#if lLcroweLogSystem
             LogSystem.LogManager.Register(temp, temp.Name, true, true);
+#endif
 
 
             //커맨드 등록
@@ -89,7 +92,7 @@ namespace lLCroweTool.InputKey
 
         public void Update()
         {
-            if (isUseMenualCheck)
+            if (isUseManualCheck)
             {
                 return;
             }
@@ -200,7 +203,7 @@ namespace lLCroweTool.InputKey
             }
 
             //메뉴얼이 아니면 특정 수만큼 자름
-            if (!isUseMenualCheck)
+            if (!isUseManualCheck)
             {
                 //잘라버릴 수량
                 int spriteNum = 3;
