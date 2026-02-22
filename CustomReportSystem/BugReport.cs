@@ -12,7 +12,7 @@ namespace lLCroweTool
 	{
 		//유니티 웹크롤링
 		//주소 찾을려면 form action 검색
-		const string BugReport_URL = "https://docs.google.com/forms/u/0/d/e/YOUR_GOOGLE_FORM_ID_HERE/formResponse";
+		const string BugReport_URL = "https://docs.google.com/forms/u/0/d/e/YOUR_GOOGLE_FORM_ID/formResponse";
 
 		//public List<Sprite> bugSpriteList = new List<Sprite>();
 		public TMP_Dropdown targetDropdown;
@@ -51,7 +51,7 @@ namespace lLCroweTool
 		{
 			WWWForm form = new WWWForm();
 			//formField 찾을려면 entry 검색
-			form.AddField("entry.YOUR_ENTRY_ID_HERE", "CAT : " + targetDropdown.itemText + "\n" + "" + targetInputField.text);
+			form.AddField("entry.YOUR_ENTRY_ID", "CAT : " + targetDropdown.itemText + "\n" + "" + targetInputField.text);
 
 
 			UnityWebRequest www = UnityWebRequest.Post(BugReport_URL, form);
