@@ -12,24 +12,26 @@ SQCL provides a collection of reusable systems and utilities for Unity game deve
 | Module | Description |
 |--------|-------------|
 | **lLcroweUtil** | Core utilities — math helpers, vector operations, tilemap utilities, priority queues, event queues, and more |
-| **ASMCode/AchievementFunc** | Achievement system with editor tools for managing game achievements |
-| **ASMCode/DBBase** | Database utilities with Google Sheets CSV integration and editor tooling |
-| **ASMCode/InPutKeySystem** | Input key binding and remapping system |
-| **ASMCode/LocalizingSystem** | Localization system for multi-language support |
-| **ASMCode/Physics** | Physics helper utilities |
-| **ASMCode/ThirdpartyAssetScript** | Wrapper scripts for third-party asset integration |
-| **ASMCode/UILogic** | UI logic framework and base classes |
-| **ContentCode** | Game content code — score system, visual objects, terrain/farm systems, signal system, and more |
-| **CustomAtrribute** | Custom C# attributes for Unity inspector enhancement |
-| **CustomReportSystem** | Custom reporting and logging system |
-| **Editor** | Editor-only tools — custom inspectors, scene view utilities, build tools, and common editor helpers |
+| **ASMCode/AchievementFunc** | Achievement and unlockable tracking with automatic/manual unlock and notification UI |
+| **ASMCode/DBBase** | Database management with Google Sheets CSV integration for immutable game data |
+| **ASMCode/InPutKeySystem** | Customizable input key binding and remapping with legacy and new Input System support |
+| **ASMCode/LocalizingSystem** | Multi-language localization with runtime language switching for TextMeshPro and UI |
+| **ASMCode/Physics** | Spring physics utilities for elastic motion, damping, and physics-based animation |
+| **ASMCode/ThirdpartyAssetScript** | Integration wrappers for third-party assets (exploration interactions, sound path detection) |
+| **ASMCode/UILogic** | Reusable UI logic — option menus, confirmation windows, and portrait card components |
+| **ContentCode** | Game content systems — score management, visual objects, terrain/farm, signal broadcasting |
+| **CustomAtrribute** | Custom C# attributes (`ButtonMethod`, `SceneName`, `Tag`) for enhanced inspector functionality |
+| **CustomReportSystem** | Bug reporting system with Google Forms integration for collecting user feedback |
+| **Editor** | Editor tools — custom inspectors, compilation analyzers, build helpers, scene view utilities |
 | **EditorComponent** | Reusable editor GUI components |
-| **Interface** | Shared interface definitions |
-| **ObjectPoolSystem** | Generic object pooling system for performance optimization |
-| **Pathfinding** | Pathfinding algorithms and utilities |
-| **SoundSystem** | Audio management and sound playback system |
-| **UI** | UI subsystems — Dialogue, Quest, and Notice display |
-| **UnityDOTS** | Unity DOTS (Data-Oriented Technology Stack) integration utilities |
+| **Interface** | Shared interface definitions for interaction systems and game rules |
+| **ObjectPoolSystem** | Generic object pooling with dynamic component recycling for performance optimization |
+| **Pathfinding** | A* Pathfinding wrapper with formation handling (Rect, Circle, SemiCircle, Charge) and RVO |
+| **SoundSystem** | Audio management with sound pooling, tag-based organization, and distance-based playback |
+| **UI/Dialogue** | Node-based dialogue system with animated text, dialogue database, and NPC interaction |
+| **UI/Quest** | Quest management with quest diary UI, mission checkers, reward givers, and visual node editing |
+| **UI/Notice** | Notification display with configurable animations, directional movement, and infinite scroll |
+| **UnityDOTS** | DOTS integration — job system helpers, entity utilities, CPU core detection, thread-safe ops |
 
 ## Installation
 
@@ -58,6 +60,12 @@ Sub-namespaces include:
 - `lLCroweTool.Achievement` — Achievement system
 - `lLCroweTool.ClassObjectPool` — Object pool system
 - `lLCroweTool.DataBase` — Database utilities
+- `lLCroweTool.InputKey` — Input key system
+- `lLCroweTool.Sound` — Sound system
+- `lLCroweTool.DialogueSystem` — Dialogue system
+- `lLCroweTool.QuestSystem` — Quest system
+- `lLCroweTool.NoticeDisplay` — Notice display
+- `lLCroweTool.DOTS` — Unity DOTS utilities
 
 ## License
 
