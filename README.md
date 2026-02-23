@@ -1,6 +1,7 @@
-# Standard Quality Control Library (SQCL)
+# Standard Quality Control Library (SQCL)   [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/lLcrowe/StandardQualityControlLibrary)
 
 품질관리를 위한 Unity C# 유틸리티 라이브러리 | 54,385 lines (2018~2025 RIP)
+https://deepwiki.com/lLcrowe/StandardQualityControlLibrary
 
 ## 개요
 
