@@ -69,5 +69,5 @@ Sub-namespaces include:
 
 ## License
 
-This project is licensed under the **GNU Lesser General Public License v2.1** (LGPL-2.1).
+This project is licensed under the **MIT License**.
 See [LICENSE](LICENSE) for the full text.
